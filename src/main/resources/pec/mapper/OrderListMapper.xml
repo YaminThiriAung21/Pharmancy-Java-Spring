@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.OrderListMapper">
+	<select id="getOrderList" resultType="pec.dto.OrderListDto">
+		(select co.customer_order_info_id, co.customer_order_date, emp.employee_name as customer_name, co.total_price, o.office_name 
+			from customer_order_info co, employee_info emp, login_user_info ln, office_info o
+			where co.login_user_info_id=ln.login_user_info_id and ln.login_user_info_id= emp.login_user_info_id and o.office_info_id= co.office_info_id and CUSTOMER_ORDER_DATE >= SYSDATE - 30)
+		UNION
+		(select co.customer_order_info_id, co.customer_order_date, c.customer_name, co.total_price, o.office_name 
+			from customer_order_info co, customer_info c, login_user_info ln, office_info o
+			where co.login_user_info_id=ln.login_user_info_id and ln.login_user_info_id= c.login_user_info_id and o.office_info_id= co.office_info_id and CUSTOMER_ORDER_DATE >= SYSDATE - 30)
+	        ORDER BY customer_order_info_id DESC
+	</select>
+	<select id="getDetailOrderList" parameterType="pec.dto.DetailOrderListDto" resultType="pec.dto.DetailOrderListDto">
+		(select co.customer_order_info_id, co.customer_order_date, emp.employee_name as customer_name, p.product_name, do.product_quantity,
+			do.product_total_price, o.office_name, p.product_image_name
+			from customer_order_info co, employee_info emp, login_user_info ln, office_info o, product_info p, customer_detail_order_info do
+			where co.login_user_info_id=ln.login_user_info_id and ln.login_user_info_id= emp.login_user_info_id and o.office_info_id= co.office_info_id
+			and do.CUSTOMER_ORDER_INFO_ID=co.CUSTOMER_ORDER_INFO_ID and p.PRODUCT_INFO_ID=do.PRODUCT_INFO_ID and co.customer_order_info_id=#{id})
+		UNION
+		(select co.customer_order_info_id, co.customer_order_date, c.customer_name, p.product_name, do.product_quantity,
+			do.product_total_price, o.office_name, p.product_image_name
+			from customer_order_info co, customer_info c, office_info o, product_info p, customer_detail_order_info do,login_user_info ln
+			where co.login_user_info_id=ln.login_user_info_id and ln.login_user_info_id= c.login_user_info_id and o.office_info_id= co.office_info_id
+			and do.CUSTOMER_ORDER_INFO_ID=co.CUSTOMER_ORDER_INFO_ID and p.PRODUCT_INFO_ID=do.PRODUCT_INFO_ID and co.customer_order_info_id=#{id})
+	       
+	</select>
+	<select id="getSearchList" parameterType="pec.dto.DateRange" resultType="pec.dto.OrderListDto">
+		(select co.customer_order_info_id, co.customer_order_date, emp.employee_name as customer_name, co.total_price, o.office_name
+			from customer_order_info co, employee_info emp, login_user_info ln, office_info o
+			where co.login_user_info_id=ln.login_user_info_id and ln.login_user_info_id= emp.login_user_info_id and o.office_info_id= co.office_info_id and CUSTOMER_ORDER_DATE BETWEEN #{dateFrom}
+			AND #{dateTo})
+		UNION
+		(select co.customer_order_info_id, co.customer_order_date, c.customer_name, co.total_price, o.office_name
+			from customer_order_info co, customer_info c, login_user_info ln, office_info o
+			where co.login_user_info_id=ln.login_user_info_id and ln.login_user_info_id= c.login_user_info_id and o.office_info_id= co.office_info_id and CUSTOMER_ORDER_DATE BETWEEN #{dateFrom}
+			AND #{dateTo})
+			ORDER BY customer_order_info_id DESC
+       
+	</select>
+</mapper>

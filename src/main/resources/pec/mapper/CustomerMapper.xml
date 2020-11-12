@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.CustomerMapper">
+	<select id="getCustomerList" resultType="pec.dto.CustomerInfoDto">
+		select c.customer_info_id, c.customer_name,c.phone_number,c.customer_address,u.email_address 
+		from customer_info c, login_user_info u 
+		where c.login_user_info_id = u.login_user_info_id and c.delete_flag = 0
+	</select>
+	<select id="getUpdate" resultType="pec.dto.CustomerInfoDto">
+		select c.customer_info_id, c.customer_name,c.phone_number,c.customer_address,u.email_address 
+		from customer_info c, login_user_info u 
+		where c.login_user_info_id = u.login_user_info_id 
+		and c.customer_info_id = #{customer_info_id}
+	</select> 
+	<update id="update" parameterType="pec.dto.CustomerInfoDto">
+		update customer_info set customer_name=#{customer_name}, phone_number=#{phone_number}, customer_address=#{customer_address}, update_user=#{update_user}, update_date=#{update_date}
+		where customer_info_id=#{customer_info_id}
+	</update>
+	<update id="delete" parameterType="int">
+		update customer_info set delete_flag=1 where customer_info_id=#{customer_info_id}
+	</update>
+<!-- 	<update id="delete" parameterType="java.util.list">
+		update customer_info set delete_flag=1 where customer_info_id in
+		<foreach item="item" index="index" collection="list"
+        	open="(" separator="," close=")">
+         	 #{item}
+    	</foreach>
+	</update> -->
+	<select id="getDelete" resultType="pec.dto.CustomerInfoDto">
+		select login_user_info_id
+		from customer_info c
+		where customer_info_id = #{customer_info_id}
+	</select> 
+	<update id="deleteId" parameterType="pec.dto.CustomerInfoDto">
+		update login_user_info set delete_flag=1 where login_user_info_id=#{login_user_info_id}
+	</update>
+</mapper>

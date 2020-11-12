@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.ProductLocRegMapper">
+	
+	<select id="getProductLocRegList"  resultType="pec.dto.ProductLocDto">
+		select * from PRODUCT_LOCATION_INFO where delete_flag=0
+	</select>
+	
+	<insert id="registerProductLoc" parameterType="pec.dto.ProductLocDto">
+	 	insert into PRODUCT_LOCATION_INFO(product_location_info_id,location_code,product_location_place,delete_flag,insert_user,insert_date,update_user,update_date)
+	 	values (#{product_location_info_id},#{location_code},#{product_location_place},#{delete_flag},#{insert_user},#{insert_date},#{update_user},#{update_date})
+	</insert>
+	
+	<update id="delete" parameterType="pec.dto.ProductLocDto">
+		update PRODUCT_LOCATION_INFO set delete_flag=1 where product_location_info_id=#{id}
+	</update>
+	
+	<update id="updateProductLoc" parameterType="pec.dto.ProductLocDto">
+		update PRODUCT_LOCATION_INFO set location_code=#{location_code},product_location_place=#{product_location_place} where product_location_info_id=#{product_location_info_id}
+	</update>
+	
+	<select id="getUpdate" resultType="pec.dto.ProductLocDto">
+		select * from PRODUCT_LOCATION_INFO where product_location_info_id=#{id}
+	</select>
+	<select id="getDuplicateRegister" resultType="pec.dto.ProductLocDto">
+		select location_code, product_location_place from PRODUCT_LOCATION_INFO where delete_flag=0
+	</select>
+	<select id="getDuplicate" resultType="pec.dto.ProductLocDto">
+		select location_code, product_location_place from PRODUCT_LOCATION_INFO where delete_flag=0 and product_location_info_id!=#{id}
+	</select>
+	
+</mapper>

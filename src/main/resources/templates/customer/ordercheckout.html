@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/auth_user_layout">
+<head>
+<title>Order Checkout</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<style>
+#reg {
+	display: none;
+}
+#reg_div {
+	display: none;
+}
+</style>
+
+</head>
+<body>
+	<div class="col-md-12 mb-0" layout:fragment="menuTitle">
+		<a th:href="@{${T(pec.datacode.UserPageInfo).USER_Home.url}+'?top'}">Home</a>
+		<span class="mx-2 mb-0">/</span> <a
+		th:href="@{${T(pec.datacode.UserPageInfo).Product_list.url}}">Product
+		List</a> <span class="mx-2 mb-0">/</span> 
+		<a th:href="@{${T(pec.datacode.UserPageInfo).CustomerOrder.url}}">Cart</a>
+		<span class="mx-2 mb-0">/</span> <strong class="text-black">Checkout</strong>
+	</div>
+	<div class="container" layout:fragment="content">
+		<div class="site-section">
+			<div class="container">
+				<div class="row mb-5" id="log_div" style="display: block;">
+					<div class="col-md-12">
+						<div class="bg-light rounded p-3">
+							<p class="mb-0"> Not have account?
+								<a href="#" class="d-inline-block" id="sign" 
+									onclick="switchVisible(); return false;"> Click here 
+								</a> to register
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="row mb-5" id="reg_div">
+					<div class="col-md-12">
+						<div class="bg-light rounded p-3">
+							<p class="mb-0"> Returning customer?
+								<a href="#" class="d-inline-block" id="login" 
+									onclick="switchVisible(); return false;"> Click here 
+								</a> to login
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+<!-- --------------------------------------------- Login Form --------------------------------------------------- -->
+<!-- 
+ 	- Customer Login Form 9/9/2020
+ 	- 
+ 	- @author Nyi Min Aye
+ 	- -->
+					<div class="col-md-6 mb-5 mb-md-0" id="log" style="display: block;">
+						<h2 class="h3 mb-3 text-black">Login to Confirm Your Order</h2>
+						<div class="p-3 p-lg-5 border">
+							<p id="errorMsg" th:if="${errorMsg != null}" th:text="${errorMsg}"
+								class="sufee-alert alert with-close alert-danger alert-dismissible fade show"></p>
+							<p id="successMsg" th:if="${logMsg != null}" th:utext="${logMsg}"
+								class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+							<form th:action="@{${T(pec.datacode.UserPageInfo).Order_Checkout.url}}" method="post" 
+								th:object="${userLoginDto}">
+
+								<div class="form-group row">
+									<div class="col-md-12">
+										<label for="email" class="text-black"> Email Address 
+											<span class="text-danger">*</span>
+										</label> 
+										<input type="text" class="form-control" th:field="*{log_email_address}" 
+											onchange="clearErrorMsg()" placeholder="Email Address" /> 
+										<span class="help-block" id="log_email_msg" style="color: red;"></span>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<div class="col-md-12">
+										<label for="password" class="text-black"> Password
+											<span class="text-danger">*</span>
+										</label> 
+										<input type="password" class="form-control" th:field="*{log_password}" 
+											onchange="clearErrorMsg()" placeholder="Password"/> 
+										<span class="help-block" id="log_password_msg" th:text="${pwdMsg}" 
+											style="color: red;"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<button type="submit" name="login_success" class="btn btn-primary btn-md btn-block"
+										onclick="return checkLogin()"> Login
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+
+<!-- ------------------------------------------------ Register Form --------------------------------------------- -->			
+<!-- 
+   - Customer Register Form 9/9/2020
+   - 
+   - @author Htet Wai Yan Aung
+   - -->
+					<div class="col-md-6 mb-5 mb-md-0" id="reg">
+						<h2 class="h3 mb-3 text-black">Register Form</h2>
+						<div class="p-3 p-lg-5 border">
+							<p id="successMsg" th:if="${regMsg != null}" th:text="${regMsg}"
+								class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+							<form th:action="@{${T(pec.datacode.UserPageInfo).Order_Checkout.url}}" method="post" 
+								th:object="${userDto}">
+
+								<div class="form-group row">
+									<div class="col-md-12">
+										<label class="text-black"> Customer Name 
+											<span class="text-danger">*</span>
+										</label> 
+										<input type="text" class="form-control" th:field="*{customer_name}" 
+											th:value="${userDto.customer_name}" onchange="clearRegMsg()" placeholder="Name" /> 
+										<span class="help-block" id="name_msg" style="color: red;"></span>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<div class="col-md-12">
+										<label class="text-black"> Phone Number 
+											<span class="text-danger">*</span>
+										</label> 
+										<input type="text" class="form-control" maxLength=15 th:field="*{phone_number}" 
+											th:value="${userDto.phone_number}" onchange="clearRegMsg()" placeholder="Phone Number" /> 
+										<span class="help-block" id="phone_msg" style="color: red;"></span>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<div class="col-md-12">
+										<label class="text-black"> Email Address 
+											<span class="text-danger">*</span>
+										</label> 
+										<input type="text" class="form-control" th:field="*{email_address}" 
+											th:value="${userDto.email_address}" onchange="clearRegMsg()" placeholder="Email Address" /> 
+										<span class="help-block" id="email_msg"  
+											th:text="${dupMsg}" style="color: red;">
+										</span>										
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<div class="col-md-12">
+										<label class="text-black"> Password 
+											<span class="text-danger">*</span>
+										</label> 
+										<input type="password" class="form-control" th:field="*{password}" 
+											th:value="${userDto.password}" onchange="clearRegMsg()" placeholder="Password" /> 
+										<span class="help-block" id="password_msg" style="color: red;"></span>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<div class="col-md-12">
+										<label class="text-black"> Confirmed Password 
+											<span class="text-danger">*</span>
+										</label> 
+										<input type="password" class="form-control" id="confirm_pass"
+											onchange="clearRegMsg()" placeholder="Confirmed Password" /> 
+										<span class="help-block" id="confirm_msg" style="color: red;"></span>
+									</div>
+								</div>
+
+								<div class="form-group row">
+									<div class="col-md-12">
+										<label for="address" class="text-black"> Customer Address 
+											<span class="text-danger">*</span>
+										</label>
+										<textarea class="form-control" th:field="*{customer_address}"
+											th:value="${userDto.customer_address}" onchange="clearRegMsg()" placeholder="Address"></textarea>
+										<span class="help-block" id="address_msg" style="color: red;"></span>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<button type="submit" name="signup" class="btn btn-primary btn-md btn-block"
+										onclick="return checkValidate()"> Register
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+
+<!-- ------------------------------------------------- Place Order ----------------------------------------------- -->				
+					<div class="col-md-6">
+						<form  th:action='@{/user/placeOrder}' th:object="${OrderCheckoutDto}" method="post">
+							<div class="row mb-5">
+								<div class="col-md-12">
+									<h2 class="h3 mb-3 text-black">Your Order</h2>
+									<div class="p-3 p-lg-5 border">
+										<table class="table site-block-order-table mb-5">
+											<thead>
+												<tr>
+													<th>Product</th>
+													<th>Total</th>
+												</tr>											
+											</thead>
+											<tbody>
+												<tr th:each="dto,ind:${checkout}">
+													<td th:text="${dto.product_name}+'&nbsp &nbsp x &nbsp &nbsp'+${dto.product_quantity}"> <strong class="mx-2">x</strong> 
+													</td>
+												
+													<td th:text="${dto.product_total_price}">
+													</td>
+													
+												</tr>											
+												<tr>
+													<td class="text-black font-weight-bold" ><strong>Cart Subtotal</strong></td>
+													<td class="text-black" th:text="${cardtotal.total_price}"></td>
+												</tr>
+												<tr>
+													<td class="text-black font-weight-bold"><strong>Order Total</strong></td>
+													<td class="text-black font-weight-bold" th:text="${cardtotal.total_price}"><strong></strong></td>
+												</tr>
+											</tbody>
+										</table>	
+										<div class="form-group">
+											<button type="submit" class="btn btn-primary btn-lg btn-block" th:if="${session.loginUserDto != null}" name="placeorder" >Place Order
+											</button>											
+										</div> 
+										<!-- <a th:href="@{${T(pec.datacode.UserPageInfo).Place_Order.url}}">Place Order</a> -->
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" layout:fragment="scriptArea">
+		window.onload = (event) => {
+			var duplicateMsg = "[[${dupMsg}]]";
+			var div1 = document.getElementById('log');
+			var div2 = document.getElementById('reg');
+			var div3 = document.getElementById('log_div');
+			var div4 = document.getElementById('reg_div');
+			if (duplicateMsg != null && duplicateMsg != ''){
+				div1.style.display = 'none';
+				div3.style.display = 'none';
+				div2.style.display = 'block';
+				div4.style.display = 'block';
+			}
+			var successMsg = "[[${regMsg}]]";
+			if (successMsg != null && successMsg != ''){
+				div1.style.display = 'none';
+				div3.style.display = 'none';
+				div2.style.display = 'block';
+				div4.style.display = 'block';
+			}
+		};
+	
+		function clearErrorMsg() {
+
+			document.getElementById("log_email_address").style.borderColor = "";
+			document.getElementById("log_email_msg").innerHTML = "";
+			
+			document.getElementById("log_password").style.borderColor = "";
+			document.getElementById("log_password_msg").innerHTML = "";
+			
+			var errorMsg = document.getElementById("errorMsg");
+			var successMsg = document.getElementById("successMsg");
+
+			if (errorMsg != null) {
+				document.getElementById("errorMsg").style.visibility = "hidden";
+				document.getElementById("errorMsg").innerHTML = "";
+				document.getElementById("errorMsg").classList
+						.remove("alerterror");
+			}
+			if (successMsg != null) {
+				document.getElementById("successMsg").style.visibility = "hidden";
+				document.getElementById("successMsg").innerHTML = "";
+				document.getElementById("successMsg").classList
+						.remove("alertsuccess");
+			}
+		}
+		
+		function clearRegMsg() {
+			
+			document.getElementById("customer_name").style.borderColor = "";
+			document.getElementById("phone_number").style.borderColor = "";
+			document.getElementById("email_address").style.borderColor = "";
+			document.getElementById("password").style.borderColor = "";
+			document.getElementById("confirm_pass").style.borderColor = "";
+			document.getElementById("customer_address").style.borderColor = "";
+
+			document.getElementById("name_msg").innerHTML = "";
+			document.getElementById("phone_msg").innerHTML = "";
+			document.getElementById("email_msg").innerHTML = "";
+			document.getElementById("password_msg").innerHTML = "";
+			document.getElementById("confirm_msg").innerHTML = "";
+			document.getElementById("address_msg").innerHTML = "";
+		}
+
+		document.getElementById("login").onclick = function switchVisible() {
+
+			var div1 = document.getElementById('log');
+			var div2 = document.getElementById('reg');
+			var div3 = document.getElementById('log_div');
+			var div4 = document.getElementById('reg_div');
+
+			if (div2.style.display == 'block' && div4.style.display == 'block') {
+				div2.style.display = 'none';
+				div4.style.display = 'none';
+				div1.style.display = 'block';
+				div3.style.display = 'block';
+			}
+		};
+
+		function checkEmail(email) {
+			var reg = /^[A-Za-z0-9+_.-]+@(.+)$/;
+			return reg.test(email);
+		}
+
+		function checkLogin() {
+
+			var passwordMsg = "[[${E000002}]]";
+			var emailMsg = "[[${E000004}]]";
+			var validMsg = "[[${E000011}]]";
+			var email = document.getElementById("log_email_address");
+			var password = document.getElementById("log_password");
+
+			if (email.value == "") {
+				document.getElementById("log_email_address").style.borderColor = "red";
+				document.getElementById("log_email_msg").innerHTML = emailMsg;
+				email.focus();
+				return false;
+			}
+			if (email.value.indexOf("@", 0) < 0) {
+				document.getElementById("log_email_address").style.borderColor = "red";
+				document.getElementById("log_email_msg").innerHTML = validMsg;
+				email.focus();
+				return false;
+			}
+			if (email.value.indexOf(".", 0) < 0) {
+				document.getElementById("log_email_address").style.borderColor = "red";
+				document.getElementById("log_email_msg").innerHTML = validMsg;
+				email.focus();
+				return false;
+			}
+			if (password.value == "") {
+				document.getElementById("log_password").style.borderColor = "red";
+				document.getElementById("log_password_msg").innerHTML = passwordMsg;
+				password.focus();
+				return false;
+			}
+		}
+
+		document.getElementById("sign").onclick = function switchVisible() {
+
+			var div1 = document.getElementById('log');
+			var div2 = document.getElementById('reg');
+			var div3 = document.getElementById('log_div');
+			var div4 = document.getElementById('reg_div');
+
+			if (div1.style.display == 'block' && div3.style.display == 'block') {
+				div1.style.display = 'none';
+				div3.style.display = 'none';
+				div2.style.display = 'block';
+				div4.style.display = 'block';
+			}
+		};
+
+		function checkPhone(phone) {
+			var num = /^(\d|,)*\.?\d*$/;
+			if (phone.match(num)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		function checkPassword(password) {
+			var code = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+			if (password.match(code)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		function checkValidate() {
+
+			var nameMsg = "[[${E000001}]]";
+			var passwordMsg = "[[${E000002}]]";
+			var phoneMsg = "[[${E000003}]]";
+			var emailMsg = "[[${E000004}]]";
+			var addressMsg = "[[${E000005}]]";
+			var lengthMsg = "[[${E000006}]]";
+			var matchMsg = "[[${E000007}]]";
+			var codeMsg = "[[${E000008}]]";
+			var numMsg = "[[${E000010}]]";
+			var validMsg = "[[${E000011}]]";
+			var confirmMsg = "[[${E000017}]]";
+
+			var name = document.getElementById("customer_name");
+			var phNum = document.getElementById("phone_number");
+			var email = document.getElementById("email_address");
+			var password = document.getElementById("password");
+			var confirm = document.getElementById("confirm_pass");
+			var address = document.getElementById("customer_address");
+
+			if (name.value == "") {
+				document.getElementById("customer_name").style.borderColor = "red";
+				document.getElementById("name_msg").innerHTML = nameMsg;
+				name.focus();
+				return false;
+			} else if (phNum.value == "") {
+				document.getElementById("phone_number").style.borderColor = "red";
+				document.getElementById("phone_msg").innerHTML = phoneMsg;
+				phNum.focus();
+				return false;
+			} else if (checkPhone(phNum.value) == false) {
+				document.getElementById("phone_number").style.borderColor = "red";
+				document.getElementById("phone_msg").innerHTML = numMsg;
+				phNum.focus();
+				return false;
+			} else if (email.value == "") {
+				document.getElementById("email_address").style.borderColor = "red";
+				document.getElementById("email_msg").innerHTML = emailMsg;
+				email.focus();
+				return false;
+			} else if (checkEmail(email.value) == false) {
+				document.getElementById("email_address").style.borderColor = "red";
+				document.getElementById("email_msg").innerHTML = validMsg;
+				email.focus();
+				return false;
+			} else if (password.value == "") {
+				document.getElementById("password").style.borderColor = "red";
+				document.getElementById("password_msg").innerHTML = passwordMsg;
+				password.focus();
+				return false;
+			} else if (password.value.length < 8) {
+				document.getElementById("password").style.borderColor = "red";
+				document.getElementById("password_msg").innerHTML = lengthMsg;
+				password.focus();
+				return false;
+			} else if (checkPassword(password.value) == false) {
+				document.getElementById("password").style.borderColor = "red";
+				document.getElementById("password_msg").innerHTML = codeMsg;
+				password.focus();
+				return false;
+			} else if (confirm.value == "") {
+				document.getElementById("confirm_pass").style.borderColor = "red";
+				document.getElementById("confirm_msg").innerHTML = confirmMsg;
+				return false;
+			} else if (password.value != confirm.value) {
+				document.getElementById("confirm_pass").style.borderColor = "red";
+				document.getElementById("confirm_msg").innerHTML = matchMsg;
+				return false;
+			} else if (address.value == "") {
+				document.getElementById("customer_address").style.borderColor = "red";
+				document.getElementById("address_msg").innerHTML = addressMsg;
+				return false;
+			} else {
+				return true;
+			}
+		}
+	</script>
+</body>
+</html>

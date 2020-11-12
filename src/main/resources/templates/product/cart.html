@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/auth_user_layout">
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>This is add to cart.</title>
+</head>
+<body>
+<div class="col-md-12 mb-0" layout:fragment="menuTitle">
+		<a th:href="@{'/pharmacyHome'}">Home</a>
+	</div>
+	<div class="container" layout:fragment="content">
+	<div th:utext="${msg}"></div>
+<table>
+	<tr>
+		<th>ProductName</th>
+		<th>ProductCode</th>
+		<th>Price</th>
+		<th>Quantity</th>
+		<th>ImageName</th>
+	</tr>
+	<tr>
+		<td th:text="${prod.product_name}"></td>
+		<td th:text="${prod.product_code}"></td>
+		<td th:text="${prod.sell_price}"></td>
+		<td th:text="${quantity}"></td>
+		<td th:text="${prod.product_image_name}"></td>
+	</tr>
+</table>
+</div>
+</body>
+</html>

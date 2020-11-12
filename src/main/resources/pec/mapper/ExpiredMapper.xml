@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.ExpiredMapper">
+	<select id="getExpiredItems" parameterType="map" resultType="pec.dto.ExpireDto">
+		select so.SUPPLIER_DETAIL_ORDER_INFO_ID, pi.product_code, pi.PRODUCT_IMAGE_NAME, pi.product_name, so.expire_date, pi.update_user, pi.update_date  
+		from product_info pi, supplier_detail_order_info so, office_info office 
+		where so.product_info_id = pi.product_info_id
+		and pi.office_info_id = office.office_info_id
+		and so.delete_flag = 0
+		and so.expire_flag = 0
+		and office.office_info_id = #{office_info_id}
+		and so.expire_date &#60;= #{newDate}
+	</select>
+	
+	<update id = "removeExpiredItems" parameterType = "int">
+      UPDATE supplier_detail_order_info 
+      SET EXPIRE_FLAG = 1  
+      WHERE SUPPLIER_DETAIL_ORDER_INFO_ID = #{SUPPLIER_DETAIL_ORDER_INFO_ID}
+   </update>
+   
+   <select id="dateSearch" parameterType="map" resultType="pec.dto.ExpireDto">
+		select so.SUPPLIER_DETAIL_ORDER_INFO_ID, pi.product_code, pi.PRODUCT_IMAGE_NAME, pi.product_name, so.expire_date, pi.update_user, pi.update_date  
+		from product_info pi, supplier_detail_order_info so, office_info office 
+		where so.product_info_id = pi.product_info_id
+		and pi.office_info_id = office.office_info_id
+		and so.delete_flag = 0
+		and so.expire_flag = 0
+		and office.office_info_id = #{office_info_id}
+		and so.expire_date &#62; #{dateFrom}
+		and so.expire_date &#60; #{dateTo}
+	</select>
+	
+	<select id="minExpireDate" resultType="String">
+		select min(expire_date)
+		from supplier_detail_order_info
+	</select>
+</mapper>

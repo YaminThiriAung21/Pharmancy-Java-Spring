@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Supplier Order List</title>
+</head>
+<style>
+.hidden {
+	display: none;
+}
+</style>
+<body>
+	<div class="col-lg-12" layout:fragment="content" id="upload">
+	<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+	<p id="successMsg" th:if="${msg != null}" th:utext="${msg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+	
+	<div id="dateError" class="alert alert-danger" data-alert="alert" style="top: 0;display:none">
+		<button class="float-right" onclick="return closing()">&times;</button>
+		<p id="focusing">
+			<strong>Date From </strong>must be less than or equal to<strong> Date To.</strong>
+		</p>
+	</div>
+	
+	<div id="deletecheck" class="alert alert-danger" data-alert="alert" style="top: 0;display:none">
+		<button class="float-right" onclick="return closing()">&times;</button>
+		<p id="focusing">
+			<strong>Please Check</strong> the check box you want to delete
+		</p>
+	</div>
+		<div class="col-lg-12 ">
+			<div class="card">
+			
+	    	 	<div class="card-header text-center">
+	         	 	<strong>Supplier Order </strong>List
+	     		</div>
+	     		
+	     		<form id="myform" th:action="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_ORDER_LIST.url}}" th:object="${supplierOrderInfoDto}" method="get"  class="form-horizontal">
+	     		
+	     		<div class="row form-group"></div>
+	     		
+				<div class="row form-group">
+					<div class="col col-md-2"></div>
+	     			<div class="col col-md-1 text-center">
+	     				<label for="hf-password" class=" form-control-label">From</label>
+	     			</div>
+	     			<div class="col-5 col-md-3">
+	     				<input type="date" th:field="*{dateFrom}" placeholder="Start Date..." class="form-control" onchange="clearErrorMsg()">
+	     				<span class="help-block" id="date_msg"></span>
+	     			</div>
+	     			<div class="col col-md-1 text-center">
+	     				<label for="hf-email" class=" form-control-label" > TO </label>
+	     			</div>
+	     			<div class="col-10 col-md-3">
+	     				<input type="date" th:field="*{dateTo}" placeholder="End Date..." class="form-control" onchange="clearErrorMsg()">
+	     				<span class="help-block" id="dateto_msg"></span>
+	     			</div>
+	     			<div class="col-2 col-md-2">
+						<button type="submit" name="search" class="btn btn-info btn-sm" onmouseover="clearErrorMsg()" onclick="return checkValidate()">Search Date</button>
+					</div>
+				</div>
+				</form>
+				
+	     		<form  th:action="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_ORDER_DELETE.url}}" method="get"  class="form-horizontal">
+	     			
+	     		<button type="submit" style="display:none;" name="delete" id="delete" class="btn btn-danger btn-sm">Delete Order</button>
+	     		
+	          		<div class="card-body card-block">
+	          			<div class="row m-t-30">
+                            <div class="col-md-12">
+                                <!-- Supplier Order List-->
+                                <div class="table-responsive m-b-40">
+                                    <table id="showOrderList" class="table table-borderless table-data3">
+                                        <thead>
+                                            <tr>
+                                            	<th scope="col"><input type="checkbox" id="masterCheck" value="checkUncheckAll"></th>
+                                                <th>No</th>
+                                                <th>Order No</th>
+                                                <th>Supplier Name</th>
+                                                <th>Total Price</th>
+                                                <th>Order Date</th>
+                                                <th>Order Receive Date</th>
+                                                <th>Detail Action</th>
+                                                <th style="text-align:center;">Update Action</th>
+                                            </tr>
+                                        </thead>
+										<tbody>
+											<tr th:each="dto, ind:${supplierOrderInfoList}">
+												<td><input type="checkbox" name="row-check" id="row-check" th:value=${dto.supplier_order_info_id}></td>
+												<td th:text="${ind.count}"></td>
+												<td th:text="${dto.supplier_order_info_id}"></td>
+												<td th:text="${dto.supplier_name}"></td>
+												<td th:text="${dto.total_price}"></td>
+												<td th:text="${{dto.order_date}}"></td>
+												<td th:text="${{dto.order_receive_date}}"></td>
+												<td><a th:href="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_ORDER_LIST.url}+'/' + ${dto.supplier_order_info_id}}">Detail</a><div id="modalHolder"></div></td>
+												<td><a th:href="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_ORDER_UPDATE.url}+'/' + ${dto.supplier_order_info_id}}">Update</a></td>
+											</tr>
+										</tbody>
+		                             </table>
+                                </div>
+                                 <div class="row form-group">
+	     							<div class="col col-md-8"></div>
+	     								<div class="col col-md-2">
+											
+										</div>
+										<div class="col col-md-2">
+											<button type="button" name="btnDelete" id="btnDelete" class="btn btn-danger btn-sm"
+											 >Delete Order</button>
+										</div>
+									</div>
+                                
+                             	</div>
+                          	</div>
+                       	</div>
+                       	
+                       	
+                       
+                       	<!-- <div class="card-footer">
+							<div class="card-block float-right">
+							<input type="button" class="btn btn-danger" name="btnDelete" id="btnDelete"
+							onclick="return deleteCheck()" value="Delete" />
+					</div>
+				</div> -->
+                       	
+                   	</form>
+                                      
+                 </div>
+                 
+             </div>
+             <button type="button" id="modalBtn" class="btn btn-primary"
+									data-toggle="modal" data-target="#largeModal"
+									 style="display:none;">Open modal</button>
+			<button type="button" id="modalBtn1" class="btn btn-primary"
+									data-toggle="modal" data-target="#confirm-submit"
+									 style="display:none;">Open modal</button>		
+          </div>
+     
+     <div layout:fragment="modalContent">
+		<div class="modal fade" id="largeModal" 
+			tabindex="-1" role="dialog" aria-labelledby="largeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content" style="width: 115%">
+					<div class="modal-header">
+						<h5 class="modal-title text-center" id="largeModalLabel" >Supplier Order Detail List</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="table-responsive m-b-40">
+							<table id="orderList" class="table table-borderless table-data3"
+								style="margin-left: -10px; word-wrap: break-word;">
+								<thead>
+									<tr>
+										<th>No.</th>
+										<th>Product Name</th>
+										<th>Medicine Type</th>
+										<th>Category Type</th>
+										<th>Packaging Type</th>
+										<th>Manufacture Date</th>
+										<th>Expire Date</th>
+										<th>Quantity</th>
+										<th>Price</th>
+										<th>Photo</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="dto, ind: ${supplierDetailOrderList}">
+										<td th:text="${ind.count}">
+										<td th:text="${dto.product_name}">
+										<td th:text="${dto.medicine_type}">
+										<td th:text="${dto.category_name}">
+										<td th:text="${dto.packaging_type}">
+										<td th:text="${#dates.format(dto.manufacture_date, 'yyyy-MM-dd')}">
+										<td th:text="${#dates.format(dto.expire_date, 'yyyy-MM-dd')}">
+										<td th:text="${dto.product_quantity}">
+										<td th:text="${dto.product_price}">
+										<td><img th:src="@{'/images/product_image/'+${dto.product_image_name}}"> </td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- delete alert -->
+	<div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					Confirm Delete
+				</div>
+				<div class="modal-body">
+					Are you sure you want to delete?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+					<input type="submit" class="btn btn-danger" value="Proceed" onclick="return deleteControl()">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	</div>
+	
+     
+     <script type="text/javascript" layout:fragment="scriptArea">
+     setTimeout(function(){
+    	 $('#successMsg').remove();
+     },3000);
+   	 
+     
+     function clearErrorMsg(){	
+			var errorMsg = document.getElementById("errorMsg");
+			var successMsg = document.getElementById("successMsg");
+			if(errorMsg != null){
+				document.getElementById("errorMsg").style.visibility = "hidden";
+				document.getElementById("errorMsg").innerHTML = "";
+				document.getElementById("errorMsg").classList.remove("alerterror");
+			}
+			if(successMsg != null){
+				document.getElementById("successMsg").style.visibility = "hidden";
+				document.getElementById("successMsg").innerHTML = "";
+				document.getElementById("successMsg").classList.remove("alertsuccess");
+			}
+			document.getElementById("dateFrom").style.borderColor = "";
+			document.getElementById("dateTo").style.borderColor = "";
+		}
+		function checkValidate(){	
+			var datefrom=new Date($('#dateFrom').val());
+		     var dateto=new Date($('#dateTo').val());
+		    // alert("datefrom="+datefrom)
+		    // alert("dateto="+dateto)
+		     
+			var nameMsg="[[${E000037}]]";
+			//alert("error msg="+nameMsg)
+			//var passwordMsg="[[${E000002}]]";											
+			var userName = document.getElementById("dateFrom").value.trim();
+			var password = document.getElementById("dateTo").value.trim();
+			if(userName == ""){
+				document.getElementById("dateFrom").style.borderColor = "red";
+				//alert("error="+nameMsg)
+				document.getElementById("date_msg").innerHTML = nameMsg;
+				return false;
+			} else if(password == ""){
+				document.getElementById("dateTo").style.borderColor = "red";
+				//alert("error1="+nameMsg)
+				document.getElementById("dateto_msg").innerHTML = nameMsg;
+				document.getElementById("date_msg").innerHTML ="";
+			    return false;
+			}
+			else if(datefrom.getTime()>dateto.getTime()){
+				//alert("Date From must be less than or equal to Date To!")
+				document.getElementById("dateError").style.display = "block";
+    			$("#dateError").fadeIn(2);
+    			document.body.scrollTop = 0;
+    			document.documentElement.scrollTop = 0;
+		    	 
+		    	 return false;
+		     }
+			else{
+				return true;
+			}
+			
+		}
+	////////////////////////////////////////////////////////////	
+		var datatbstatus= "[[${data_tb}]]";  
+		if(datatbstatus=="save"){
+			$(document).ready(function() {	
+				
+				$('.active').removeClass('active');
+				$('#supplier_order_list').addClass('active');
+				
+				
+				var table=$('#showOrderList').DataTable({
+					"lengthMenu" : [ 3, 5, 7, 9, 10 ],
+					stateSave: true
+				});
+				
+				$(function() {
+
+					$("#btnDelete").on(
+							"click",
+							function() {
+				      var form = this;
+
+				      // Iterate over all checkboxes in the table
+				      table.$('input[type="checkbox"]').each(function(){
+				    	  
+				         // If checkbox doesn't exist in DOM
+				         if(!$.contains(document, this)){
+				            // If checkbox is checked
+				            
+				            if(this.checked){
+				               // Create a hidden element 
+				               $(form).append(
+				                  $('<input>')
+				                     .attr('type', 'hidden')
+				                     .attr('name', this.name)
+				                     .attr('id','hid')
+				                     .val(this.value)
+				               );
+				            }
+				         } 
+				      });
+				    
+				      deleteCheck();
+				      
+				   });
+				});
+				var count=0;
+				$(function() {
+
+					// Header Master Checkbox Event
+					$("#masterCheck").on(
+							"click",
+							function() {
+								var form = this;
+								//alert("do it")
+								
+								if ($("input:checkbox").prop("checked")) {
+									//alert("ok")
+									
+									table.$('input[type="checkbox"]').each(function(){
+										//alert("ok again")
+									$(this).prop('checked',true);
+									console.log(this);
+									});
+									
+								} else {
+									//$("input:checkbox[name='row-check']").prop("checked", false);
+									table.$('input[type="checkbox"]').each(function(){
+									$(this).prop('checked',false);
+									});
+								}
+							});
+
+					// Check event on each table row checkbox
+					
+					var form=this;
+					$(this)
+							.on(
+									"change",
+									function() {
+											
+										var allCount=0;
+										var checkCount=0;
+										table.$('input[type="checkbox"]').each(function(){
+											allCount++;
+											if(this.checked){
+												checkCount++;
+											}
+											});
+
+										console.log("allcount : ",allCount);
+										console.log("checkcount : ",checkCount);
+										// If all checked manually then check master checkbox
+										if (allCount == checkCount) {
+											$("#masterCheck").prop("checked", true);
+										} else {
+											$("#masterCheck").prop("checked", false);
+										}
+									});
+				});
+			});	
+		} 
+		else{
+			$(document).ready(function() {
+	 			$('#example').DataTable({
+	 				"lengthMenu" : [ 3, 5, 7, 9, 10 ],
+	 	            stateSave: true
+	 	        }).search( '' )
+	 	        .columns().search( '' )
+	 	        .draw();					
+	 		});
+			$(function() {
+
+				$("#btnDelete").on(
+						"click",
+						function() {
+			      var form = this;
+
+			      // Iterate over all checkboxes in the table
+			      table.$('input[type="checkbox"]').each(function(){
+			    	  
+			         // If checkbox doesn't exist in DOM
+			         if(!$.contains(document, this)){
+			            // If checkbox is checked
+			            
+			            if(this.checked){
+			               // Create a hidden element 
+			               $(form).append(
+			                  $('<input>')
+			                     .attr('type', 'hidden')
+			                     .attr('name', this.name)
+			                     .attr('id','hid')
+			                     .val(this.value)
+			               );
+			            }
+			         } 
+			      });
+			    
+			      deleteCheck();
+			      
+			   });
+			});
+			var count=0;
+			$(function() {
+
+				// Header Master Checkbox Event
+				$("#masterCheck").on(
+						"click",
+						function() {
+							var form = this;
+							
+							if ($("input:checkbox").prop("checked")) {
+								
+								table.$('input[type="checkbox"]').each(function(){
+								$(this).prop('checked',true);
+								console.log(this);
+								});
+								
+							} else {
+								//$("input:checkbox[name='row-check']").prop("checked", false);
+								table.$('input[type="checkbox"]').each(function(){
+								$(this).prop('checked',false);
+								});
+							}
+						});
+
+				// Check event on each table row checkbox
+				
+				var form=this;
+				$(this)
+						.on(
+								"change",
+								function() {
+										
+									var allCount=0;
+									var checkCount=0;
+									table.$('input[type="checkbox"]').each(function(){
+										allCount++;
+										if(this.checked){
+											checkCount++;
+										}
+										});
+
+									console.log("allcount : ",allCount);
+									console.log("checkcount : ",checkCount);
+									// If all checked manually then check master checkbox
+									if (allCount == checkCount) {
+										$("#masterCheck").prop("checked", true);
+									} else {
+										$("#masterCheck").prop("checked", false);
+									}
+								});
+			});
+		}
+		
+     		/////////////Modal//////////////////
+     		
+        	var status= "[[${showModal}]]"; 
+      		//alert("modal="+status)
+      		if(status=="show")
+      		{
+      			//alert("modal shows.")
+      			$("#modalBtn").click();    			
+      		}
+      		else{
+      			//alert("modal does not show.")
+      		} 
+      		
+      		/////////////End Modal/////////////
+      		
+      		function closing() {
+    			document.getElementById("deletecheck").style.display = "none";
+    			document.getElementById("dateError").style.display="none";
+    			return false;
+    		}
+      		
+      		function deleteCheck() {
+      			
+    			var total_checked_boxes = $("input:checkbox[name='row-check']:checked").length;
+    			
+    			var hidden = $('#upload input[type="hidden"]').length;
+    			
+    			var total = total_checked_boxes + hidden;
+    			console.log("hidden",hidden);
+
+    			if (total == 0) {
+    				document.getElementById("deletecheck").style.display = "block";
+    				$("#deletecheck").fadeIn(2);
+    				document.body.scrollTop = 0;
+    				document.documentElement.scrollTop = 0;
+    				return false;
+    			} else {
+    				$("#modalBtn1").click();
+    				/* $('input[id="delete"]').attr("data-toggle", "modal");
+    				$('input[id="delete"]').attr("data-target", "#confirm-submit");
+    				return true; */
+    				/* var r=confirm("Are you sure you want to delete?");
+    				if(r==true){
+    					$('input[name="delete"]').attr("data-toggle", "modal");
+        				$('input[name="delete"]').attr("data-target", "#confirm-submit");
+    				}
+    				return false; */
+    			}
+    		}
+      		
+      		function deleteControl(){
+      			$("#delete").click();
+      		}
+
+		</script>
+</body>
+</html>

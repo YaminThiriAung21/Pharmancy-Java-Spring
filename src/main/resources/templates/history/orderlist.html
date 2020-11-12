@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/admin_layout">
+<head>
+<title>Customer Order History</title>
+</head>
+
+<body>
+	<div class="col-lg-12" layout:fragment="content">
+		<div class="row" th:fragment="dateRange">
+			<div class="col-lg-12">
+				<div class="container">
+					<form th:action="@{/admin/customerOrderHistory}" method="post" name="form1" th:object="${dateRange}">
+						<div class="form-group row">
+							<div class="input-group" style="width: max-content; margin-left: auto;">
+								<input type="text" class="form-control" id="dateRange" autocomplete="off"
+									style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc"></input>
+								<div class="input-group-append">
+									<span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+								</div>
+								<input type="hidden" th:value="${dateFrom}" th:id="dateFrom" th:name="dateFrom" />
+								<input type="hidden" th:value="${dateTo}" th:id="dateTo" th:name="dateTo"/>
+								<button class="btn btn-primary" name="search" type="submit" onclick="return checkValidate()"
+									style="float: right">Search
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		
+		<!-- DATA TABLE-->
+		<div class="card">
+			<div class="card-header text-center">
+				<div th:utext="${displayMessage}"></div>
+			</div>
+			<div class="card-body card-block">
+				<table id="orderList" class="table table-borderless table-data3" style="margin-left: -10px; word-wrap: break-word;">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>Date</th>
+							<th>Customer Name</th>
+							<th>Order No.</th>
+							<th>Total Price</th>
+							<th>Office Name</th>
+							<th>Detail</th>
+
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="dto, ind: ${orderList}">
+							<td th:text="${ind.count}"></td>
+							<td th:text="${dto.customer_order_date}"></td>
+							<td th:text="${dto.customer_name}"></td>
+							<td th:text="${dto.customer_order_info_id}"></td>
+							<td th:text="${dto.total_price}"></td>
+							<td th:text="${dto.office_name}"></td>
+							<td>
+								<a th:href="@{${T(pec.datacode.AdminPageInfo).CUSTOMER_ORDER_HISTORY.url}+'/' + ${dto.customer_order_info_id}}">Detail</a>
+								<div id="modalHolder"></div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- END DATA TABLE-->
+
+		<button type="button" id="modalBtn" class="btn btn-primary"
+			data-toggle="modal" data-target="#largeModal" style="display: none;">Open modal
+		</button>
+	</div>
+
+	<div layout:fragment="modalContent">
+		<div class="modal fade" id="largeModal" th:fragment="modalContent" tabindex="-1" role="dialog" aria-labelledby="scrollmodalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content" style="width: 115%">
+					<div class="modal-header">
+						<strong class="modal-title" id="largeModalLabel">Detail Order List</strong>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="table-responsive m-b-40">
+							<table id="orderList" class="table table-borderless table-data3" style="margin-left: -10px; word-wrap: break-word;">
+								<thead>
+									<tr>
+										<th>No.</th>
+										<th>Date</th>
+										<th>Customer Name</th>
+										<th>Product Name</th>
+										<th>Quantity</th>
+										<th>Price</th>
+										<th>Office Name</th>
+										<th>Photo</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="dto, ind: ${detailOrderList}">
+										<td th:text="${ind.count}">
+										<td th:text="${dto.customer_order_date}">
+										<td th:text="${dto.customer_name}">
+										<td th:text="${dto.product_name}">
+										<td th:text="${dto.product_quantity}">
+										<td th:text="${dto.product_total_price}">
+										<td th:text="${dto.office_name}">
+										<td><img th:src="@{'/images/product_image/'+${dto.product_image_name}}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" layout:fragment="scriptArea">
+		var datatbstatus = "[[${showModal}]]";
+		if (datatbstatus == "show") 
+		{
+			$("#modalBtn").click();
+		}
+		$(document).ready(function() {		
+			$('.active').removeClass('active');
+			$('#customer_order_history').addClass('active');
+		});
+			
+	</script>
+</body>
+
+</html>

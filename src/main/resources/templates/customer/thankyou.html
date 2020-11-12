@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/user_layout">
+<head>
+<title>Pharmative &mdash; Colorlib Template</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+	<div class="col-md-12 mb-0" layout:fragment="menuTitle">
+		<a th:href="@{${T(pec.datacode.UserPageInfo).USER_Home.url}+'?top'}">Home</a><span class="mx-2 mb-0">/</span>
+		<strong class="text-black">Thank You</strong>
+	</div>
+	<div class="container" layout:fragment="content">
+		<div class="site-section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<span class="icon-check_circle display-3 text-primary"></span>
+						<h2 class="display-3 text-black">Thank you!</h2>
+						<p class="lead mb-5">You order was successfuly completed.</p>
+						<p>
+							<a th:href="@{${T(pec.datacode.UserPageInfo).Product_list.url}}"
+							class="btn btn-md height-auto px-4 py-3 btn-primary">Back to
+							store</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+</body>
+</html>

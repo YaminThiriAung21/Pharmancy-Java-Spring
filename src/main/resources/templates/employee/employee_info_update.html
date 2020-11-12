@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Employee Info Update</title>
+</head>
+<body>
+	<div class="col-lg-12" layout:fragment="content">
+		<div id="errorcheck" style="top: 0">
+			<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}"
+				class="sufee-alert alert with-close alert-danger alert-dismissible fade show"></p>
+			<p id="successMsg" th:if="${msg != null}" th:utext="${msg}"
+				class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+		</div>
+		<form
+			th:action="@{${T(pec.datacode.AdminPageInfo).EMPLOYEE_INFO_UPDATE_CONFIRM.url}}"
+			th:object="${empacc}" method="post" class="form-horizontal">
+			<div class="card">
+				<div class="card-header text-center">
+					<strong>Employee</strong> Info
+				</div>
+
+				<div class="card-body card-block">
+
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="*{employee_code}" class=" form-control-label">Employee
+								Code</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="text" th:field="*{employee_code}"
+								th:value="${empacc.employee_code}" class="form-control" readonly>
+						</div>
+					</div>
+					<input type="hidden" th:field="*{employee_info_id}"
+						th:value="${empacc.employee_info_id}" class="form-control">
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="*{employee_name}" class=" form-control-label">Employee
+								Name <span style="color:red">*</span></label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="text" th:field="*{employee_name}"
+								th:value="${empacc.employee_name}" placeholder="Employee Name" onchange="clearErrorMsg()" maxlength="45"
+								class="form-control"> <span class="help-block"
+								id="name_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="*{email_address}" class=" form-control-label">Email
+								Address <span style="color:red">*</span></label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="text" th:field="*{email_address}"
+								th:value="${empacc.email_address}" placeholder="Email Address" onchange="clearErrorMsg()" maxlength="45"
+								class="form-control"> <span class="help-block"
+								id="email_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="*{password}" class=" form-control-label">New
+								Password</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="password" th:field="*{password}" onchange="clearErrorMsg()"
+								placeholder="Password" class="form-control"> <span
+								class="help-block" id="password_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label class=" form-control-label">Confirmed Password</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="password" name="confirmpass" id="confirmpass" onchange="clearErrorMsg()"
+								placeholder="Confirm Password" class="form-control"> <span
+								class="help-block" id="confirmpass_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="office_name" class=" form-control-label">Office
+								Name</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<select name="office_name" class="selectpicker form-control"
+								data-live-search="true" th:field="${empacc.office_name}">
+								<option th:each="office_name: ${OfficeName}"
+									th:value="${office_name}" th:text="${office_name}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="*{birth_date}" class="form-control-label">Birth
+								Date <span style="color:red">*</span></label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="date" th:field="*{birth_date}"
+								th:value="${empacc.birth_date}" class="form-control">
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label class=" form-control-label">Gender <span style="color:red">*</span></label>
+						</div>
+						<div class="col col-md-9">
+							<div class="form-check-inline form-check">
+								<label for="male" class="form-check-label "> 
+									<input type="radio" id="male" name="gender" th:field="*{gender}" th:value="male" class="form-check-input">Male
+								</label> 
+								<label for="female" class="form-check-label "> 
+									<input type="radio" id="female" name="gender" th:field="*{gender}" th:value="female" class="form-check-input">Female
+								</label>
+
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label class=" form-control-label">Permit Order <span style="color:red">*</span></label>
+						</div>
+						<div class="col col-md-9">
+							<div class="form-check-inline form-check">
+								<label for="permit_yes" class="form-check-label "> 
+									<input type="radio" id="permit_yes" name="permit_order" th:field="*{permit_order}" th:value="yes" class="form-check-input" >Yes
+								</label> 
+								<label for="permit_no" class="form-check-label "> 
+									<input type="radio" id="permit_no" name="permit_order" th:field="*{permit_order}" th:value="no" class="form-check-input" >No
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="job_role" class=" form-control-label">Role
+								</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<select name="job_role" class="selectpicker form-control"
+								data-live-search="true" th:field="${empacc.role}">
+								<option th:each="job_role: ${accRole}"
+									th:value="${job_role}" th:text="${job_role}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="*{phone_number}" class=" form-control-label">Phone
+								Number <span style="color:red">*</span></label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="text" th:field="*{phone_number}"
+								th:value="${empacc.phone_number}" placeholder="Phone Number" onchange="clearErrorMsg()"maxlength="20"
+								class="form-control"> <span class="help-block"
+								id="phone_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="employee-address" class=" form-control-label">Address <span style="color:red">*</span></label>
+						</div>
+						<div class="col-12 col-md-9">
+							<textarea rows="5" th:field="*{employee_address}"
+								th:value="${empacc.employee_address}" placeholder="Address..." onchange="clearErrorMsg()" maxlength="200"
+								class="form-control"></textarea>
+							<span class="help-block" id="address_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="employee-education" class=" form-control-label">Education<span style="color:red">*</span></label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="text" th:field="*{employee_education}"
+								th:value="${empacc.employee_education}" placeholder="Education" onchange="clearErrorMsg()" maxlength="45"
+								class="form-control"> <span class="help-block"
+								id="education_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="work_experience" class=" form-control-label">Work
+								Experience (in years) <span style="color:red">*</span></label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="number" min="0" max="10"
+								th:field="*{work_experience}"
+								th:value="${empacc.work_experience}" onchange="clearErrorMsg()"
+								placeholder="Work Experience" class="form-control"> <span
+								class="help-block" id="workexp_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="remark" class=" form-control-label">Remark</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<textarea rows="5" th:field="*{remark}" 
+								th:value="${empacc.remark}" placeholder="Remark..." maxlength="200"
+								class="form-control"></textarea>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="employee-address" class=" form-control-label">Job
+								Status</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<select name="job_status" class="selectpicker form-control"
+								data-live-search="true" th:field="${empacc.job_status}">
+								<option th:each="job_status: ${accDropdown}"
+									th:value="${job_status}" th:text="${job_status}"></option>
+							</select>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="*{job_start_date}" class="form-control-label">Job
+								Start Date <span style="color:red">*</span></label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="date" th:field="*{job_start_date}"
+								th:value="${empacc.job_start_date}" placeholder="Job Start Date"
+								class="form-control">
+						</div>
+					</div>
+
+				</div>
+				<div class="card-footer">
+					<div class="card-block float-right">
+					<button type="submit" name="updated"
+							class="btn btn-primary btn-sm " onmouseover="clearErrorMsg()" onclick="return checkValidate()">
+							<i class="fa fa-dot-circle-o"></i> Update
+						</button>
+						<button type="button" class="btn btn-danger btn-sm" th:onclick="|window.location.href='@{${T(pec.datacode.AdminPageInfo).EMPLOYEE_INFO.url}}'|">
+							<i class="fa fa-ban"></i> Cancel
+						</button>
+					</div>
+				</div>
+
+			</div>
+		</form>
+		<script type="text/javascript" layout:fragment="scriptArea">
+		$(document).ready(function() {
+			$('.active').removeClass('active');
+			$('#employee_info').addClass('active');
+		});
+		
+			function clearErrorMsg() {
+				
+				document.getElementById("name_msg").innerHTML = "";
+				document.getElementById("email_msg").innerHTML = "";
+				document.getElementById("password_msg").innerHTML = "";
+				document.getElementById("confirmpass_msg").innerHTML = "";
+				document.getElementById("phone_msg").innerHTML = "";
+				document.getElementById("address_msg").innerHTML = "";
+				document.getElementById("education_msg").innerHTML = "";
+				document.getElementById("workexp_msg").innerHTML = "";
+				
+				document.getElementById("employee_name").style.borderColor = "";
+				document.getElementById("email_address").style.borderColor = "";
+				document.getElementById("password").style.borderColor = "";
+				document.getElementById("confirmpass").style.borderColor = "";
+				document.getElementById("phone_number").style.borderColor = "";
+				document.getElementById("employee_education").style.borderColor = "";
+				document.getElementById("work_experience").style.borderColor = "";
+				document.getElementById("employee_address").style.borderColor = "";
+				
+				errorclosing();
+			}
+			function checkValidate() {
+				var nameMsg = "[[${E000013}]]";
+				var emailMsg = "[[${E000004}]]";
+				var passwordMsgLessThan = "[[${E000006}]]";
+				var confirmpassMsg = "[[${E000007}]]";
+				var phoneMsg = "[[${E000003}]]";
+				var addressMsg = "[[${E000005}]]";
+				var eduMsg = "[[${E000016}]]";
+				var workexpMsg = "[[${E000104}]]";
+				var emailValidate = "[[${E000011}]]";
+				var complexPassword = "[[${E000112}]]";
+				var phoneValidate = "[[${E000010}]]";
+				
+				var empcode = document.getElementById("employee_code").value
+						.trim();
+				var empName = document.getElementById("employee_name").value
+						.trim();
+				var email = document.getElementById("email_address").value
+						.trim();
+				var password = document.getElementById("password").value.trim();
+				var confirmpass = document.getElementById("confirmpass").value
+						.trim();
+				var phoneNum = document.getElementById("phone_number").value
+						.trim();
+				var address = document.getElementById("employee_address").value
+						.trim();
+				var education = document.getElementById("employee_education").value
+						.trim();
+				var workExp = document.getElementById("work_experience").value
+						.trim();
+
+				if (empName == "") {
+					document.getElementById("employee_name").style.borderColor = "red";
+					document.getElementById("name_msg").innerHTML = nameMsg;
+					$("#employee_name").focus();
+					return false;
+				} else if (email == "") {
+					document.getElementById("email_address").style.borderColor = "red";
+					document.getElementById("email_msg").innerHTML = emailMsg;
+					$("#email_address").focus();
+					return false;
+				} else if (validateEmail(email)==false) {
+					document.getElementById("email_address").style.borderColor = "red";
+					document.getElementById("email_msg").innerHTML = emailValidate;
+					$("#email_address").focus();
+						return false;	
+				} else if (password != "") {
+					if(password.length<8){
+						document.getElementById("password").style.borderColor = "red";
+						document.getElementById("password_msg").innerHTML = passwordMsgLessThan;
+						$("#password").focus();
+						return false;
+					} else if(complexPass(password)==false){
+						document.getElementById("password").style.borderColor = "red";
+						document.getElementById("password_msg").innerHTML = complexPassword;
+						$("#password").focus();
+						return false;	
+					} else if(password!=confirmpass){
+						document.getElementById("confirmpass").style.borderColor = "red";
+						document.getElementById("confirmpass_msg").innerHTML = confirmpassMsg;
+						$("#confirmpass").focus();
+						return false;	
+					}
+				} else if (phoneNum == "") {
+					document.getElementById("phone_number").style.borderColor = "red";
+					document.getElementById("phone_msg").innerHTML = phoneMsg;
+					$("#phone_number").focus();
+					return false;
+				} else if (checkPhone(phoneNum) == false) {
+					document.getElementById("phone_number").style.borderColor = "red";
+					document.getElementById("phone_msg").innerHTML = phoneValidate;
+					$("#phone_number").focus();
+					return false;
+				} else if (address == "") {
+					document.getElementById("employee_address").style.borderColor = "red";
+					document.getElementById("address_msg").innerHTML = addressMsg;
+					$("#employee_address").focus();
+					return false;
+				} else if (education == "") {
+					document.getElementById("employee_education").style.borderColor = "red";
+					document.getElementById("education_msg").innerHTML = eduMsg;
+					$("#employee_education").focus();
+					return false;
+				} else if (workExp == "") {
+					document.getElementById("work_experience").style.borderColor = "red";
+					document.getElementById("workexp_msg").innerHTML = workexpMsg;
+					$("#work_experience").focus();
+					return false;
+				} else {
+					return true;
+				}
+			}
+			
+			function validateEmail(email) {
+				const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+				return re.test(email);
+			}
+			
+			function complexPass(password){
+				var hasUpperCase = /[A-Z]/.test(password);
+				var hasLowerCase = /[a-z]/.test(password);
+				var hasNumbers = /\d/.test(password);
+				var hasNonalphas = /\W/.test(password);
+				if (hasUpperCase + hasLowerCase + hasNumbers + hasNonalphas !=4){
+					return false;
+				}
+				else{
+					return true;
+				}
+					
+			}
+			
+			function checkPhone(phone){
+				var numbers = /^[0-9]+,?[0-9]+?$/; 
+				if(phone.match(numbers)){
+					return true;
+				}
+				else{
+					return false;	
+				}
+			}
+			function errorclosing(){
+				document.getElementById("errorcheck").style.display = "none";
+			}
+
+		</script>
+	</div>
+</body>
+</html>

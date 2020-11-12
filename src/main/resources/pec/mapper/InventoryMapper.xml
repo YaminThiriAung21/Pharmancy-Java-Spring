@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.InventoryMapper">
+	<update id="addInventory" parameterType="map">
+		update inventory_info
+		set total_quantity = total_quantity+#{amount}
+		where product_info_id = #{product_info_id}
+		and office_info_id = #{office_info_id}
+	</update>
+	
+	<update id="subtractInventory" parameterType="map">
+		update inventory_info
+		set total_quantity = total_quantity-#{amount}
+		where product_info_id = #{product_info_id}
+		and office_info_id = #{office_info_id}
+	</update>
+	
+	<update id="expireInventory" parameterType="map">
+		update inventory_info
+		set total_quantity = total_quantity-#{amount}
+		where product_info_id = #{product_info_id}
+		and office_info_id = #{office_info_id}
+	</update>
+	
+	<update id="damageInventory" parameterType="map">
+		update inventory_info
+		set total_quantity = total_quantity-#{amount}
+		where product_info_id = #{product_info_id}
+		and office_info_id = #{office_info_id}
+	</update>
+	
+	<update id="totalExpireInventory" parameterType="map">
+		update inventory_info
+		set total_expired_quantity = total_expired_quantity+#{amount}
+		where product_info_id = #{product_info_id}
+		and office_info_id = #{office_info_id}
+	</update>
+	
+	<select id="totalDamageInventory" parameterType="map">
+		update inventory_info
+		set total_damage_quantity = total_damage_quantity+#{amount}
+		where product_info_id = #{product_info_id}
+		and office_info_id = #{office_info_id}
+	</select>
+	
+</mapper>

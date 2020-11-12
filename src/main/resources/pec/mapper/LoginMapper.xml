@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.LoginMapper">
+	<select id="getLoginInfo" parameterType="java.lang.String" resultType="pec.dto.EmployeeInfoDto">
+		SELECT login_user_info.office_info_id, office_info.office_name, login_user_info.role, login_user_info.password, login_user_info.email_address,
+		employee_info.employee_name, employee_info.employee_info_id FROM login_user_info 
+		INNER JOIN employee_info ON employee_info.login_user_info_id = login_user_info.login_user_info_id 
+		INNER JOIN office_info ON login_user_info.office_info_id = office_info.office_info_id WHERE login_user_info.email_address = #{email}				
+	</select>
+</mapper>

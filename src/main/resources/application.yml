@@ -1,0 +1,13 @@
+spring:
+ # RDS
+ datasource:
+   url: jdbc:oracle:thin:@localhost:1521/XE
+   username: pharmacyadmin
+   password: root
+   driverClassName: oracle.jdbc.OracleDriver
+
+
+
+#Server
+server:
+   port: 9091

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/auth_user_layout">
+<head>
+<title>Product List</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+
+<style>
+
+
+input[type=text] {
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  background-image: url('searchicon.png');
+  background-position: 10px 10px; 
+  background-repeat: no-repeat;
+  padding: 7px 18px 7px 30px;
+}
+
+input[type=submit] {
+  background-color: #75b239;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  float: right;
+}
+
+input[type=submit]:hover {
+  background-color: #45a049;
+  float: right;
+}
+
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: white;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: #75b239;
+  text-align: center;
+  padding: 8px 30px;
+  text-decoration: none;
+}
+
+.bgChange{
+ background-color: forestgreen;
+}
+
+
+button {
+    width: 100px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    background-color: #75b239;
+    height: 50px;
+}
+
+.cont{
+  width:720px;
+}
+.pagcontainer{
+  display:flex;
+  flex-wrap:wrap;
+  width:1200px;
+  justify-content:flex-start; 
+  
+}
+.single-item{
+  width: 360px;
+    height: 300px;
+    /* display: flex; */
+    align-items: center;
+    /* justify-content: center; */
+    background-color: ghostwhite;
+    smargin: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    color: #888;
+    margin-left: 10px;
+    padding-left: 100px;
+}
+.pagination a.current {
+    background: #f3f3f3;
+}
+.pagination a {
+    display: inline-block;
+    padding: 0 10px;
+    cursor: pointer;
+    
+}
+.pagination, .pagination * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+        padding-left: 500px;
+}
+
+img {
+  border-radius: 4px;
+  padding: 5px;
+  width: 150px;
+  height: 150px;
+}
+
+</style>
+
+</head>
+<body>
+<div class="col-md-12 mb-0" layout:fragment="menuTitle">
+
+	<a th:href="@{${T(pec.datacode.UserPageInfo).USER_Home.url}+'?top'}">Home</a>
+	<span class="mx-2 mb-0">/</span>
+	<strong class="text-black">Products</strong>
+</div>
+<div class="col-lg-12" layout:fragment="content">
+<div class="container">
+<form th:action='@{${T(pec.datacode.UserPageInfo).Product_list.url}}' name="product_form" method="get">	
+	<div class="d-flex"> 
+	<ul>
+		<li onclick="location.href='${T(pec.datacode.UserPageInfo).Product_List.url}'" class="bgChange">
+            <a href="productlist.html" th:href="@{${T(pec.datacode.UserPageInfo).Product_list.url}}" style="color:white;background-color: #75b239;">All Products</a>
+        </li>
+					<li><select th:field="*{prod.category_info_id}"
+						class="form-control"
+						onchange="categorySearchFunction(this.value);">
+							<!-- <option value='0' >-- Category --</option> -->
+							<option value='0'>-- Category --</option>
+							<option th:each="dto:${pplist}"
+								th:value="${dto.category_info_id}"
+								th:text="${dto.category_name}"></option>
+					</select></li>
+					<li><input type="submit" name="medicineName" value="Medicine Name(A~Z)" ></li>
+        <li><select th:field="*{prod.medicine_info_id}" class="form-control" onchange="medicineTypeFunction(this.value);">
+				<option value='0'>-- Medicine Type --</option>      
+                <option th:each="dto:${mtlist}" th:value="${dto.medicine_info_id}" th:text="${dto.medicine_type}">
+                </option>
+            </select>
+        </li>
+        
+    </ul>
+
+	<div class="active-green-4 ml-auto align-self-center">
+		<input type="text" th:field="*{prod.product_name}" oninput="this.value = this.value.replace(/[^A-Za-z0-999]/g, '').replace(/(\..*)\./g, '$1');" maxlength="25" placeholder="Product Name Search..">
+		<input type="submit" name="search" value="Search" >
+	</div>
+  </div>
+</form>
+</div>
+	<br/>
+	<br/>
+	<br>
+<div class="alert alert-danger" th:if="${displayMessage != null}">
+			  <div th:utext="${displayMessage}" ></div>
+			</div>
+		<div class="row">
+          <div class="title-section text-center col-12">
+            <h2>Pharmacy <strong class="text-primary">Products</strong></h2>
+          </div>
+        </div>
+
+	<div class="cont">
+  <div class="pagcontainer" >
+    <div class="single-item" th:each="dto : ${prods}">
+		<a th:href="@{${T(pec.datacode.UserPageInfo).Product_Detail.url}+'/'+${dto.product_info_id}}">
+			<img th:src="@{'/images/product_image/'+${dto.product_image_name}}" >
+		</a>
+		<br> 
+		<label class="text-dark" th:text="${dto.product_name}"></label>
+		<br>
+		<label class="price">
+			<span th:text="${dto.sell_price}+' Ks'"></span>.
+		</label>
+		<br>
+		<a th:href="@{${T(pec.datacode.UserPageInfo).Product_Detail.url}+'/'+ ${dto.product_info_id}}">
+			<button>Detail</button>
+		</a>
+		
+</div>
+</div>
+</div>
+	<div class="site-section">
+			<div class="container">
+			</div></div>
+</div>
+
+	<script layout:fragment="scriptArea">
+		function medicineTypeFunction(value) {
+
+			/* var x = document.getElementsByName('product_form');
+			//x.action = "/user/productList/"+value;
+			x[0].submit();  */
+
+			if (value == 0) {
+				return false;
+			}
+			window.location.href = "/user/productList/medicineTypeSearch/"
+					+ value;
+		}
+
+		function categorySearchFunction(value) {
+
+			/* var x = document.getElementsByName('product_form');
+			//x.action = "/user/productList/"+value;
+			x[0].submit();  */
+			if (value == 0) {
+				return false;
+			}
+			window.location.href = "/user/productList/categorySearch/" + value;
+		}
+
+		(function($) {
+			var pagify = {
+				items : {},
+				pagcontainer : null,
+				totalPages : 1,
+				perPage : 3,
+				currentPage : 0,
+				createNavigation : function() {
+					this.totalPages = Math.ceil(this.items.length
+							/ this.perPage);
+
+					$('.pagination', this.pagcontainer.parent()).remove();
+					var pagination = $('<div class="pagination"></div>')
+							.append(
+									'<a class="nav prev disabled" data-next="false"><</a>');
+
+					for (var i = 0; i < this.totalPages; i++) {
+						var pageElClass = "page";
+						if (!i)
+							pageElClass = "page current";
+						var pageEl = '<a class="' + pageElClass
+								+ '" data-page="' + (i + 1) + '">' + (i + 1)
+								+ "</a>";
+						pagination.append(pageEl);
+					}
+					pagination
+							.append('<a class="nav next" data-next="true">></a>');
+
+					this.pagcontainer.after(pagination);
+
+					var that = this;
+					$("body").off("click", ".nav");
+					this.navigator = $("body").on("click", ".nav", function() {
+						var el = $(this);
+						that.navigate(el.data("next"));
+					});
+
+					$("body").off("click", ".page");
+					this.pageNavigator = $("body").on("click", ".page",
+							function() {
+								var el = $(this);
+								that.goToPage(el.data("page"));
+							});
+				},
+				navigate : function(next) {
+					// default perPage to 5
+					if (isNaN(next) || next === undefined) {
+						next = true;
+					}
+					$(".pagination .nav").removeClass("disabled");
+					if (next) {
+						this.currentPage++;
+						if (this.currentPage > (this.totalPages - 1))
+							this.currentPage = (this.totalPages - 1);
+						if (this.currentPage == (this.totalPages - 1))
+							$(".pagination .nav.next").addClass("disabled");
+					} else {
+						this.currentPage--;
+						if (this.currentPage < 0)
+							this.currentPage = 0;
+						if (this.currentPage == 0)
+							$(".pagination .nav.prev").addClass("disabled");
+					}
+
+					this.showItems();
+				},
+				updateNavigation : function() {
+
+					var pages = $(".pagination .page");
+					pages.removeClass("current");
+					$(
+							'.pagination .page[data-page="'
+									+ (this.currentPage + 1) + '"]').addClass(
+							"current");
+				},
+				goToPage : function(page) {
+
+					this.currentPage = page - 1;
+
+					$(".pagination .nav").removeClass("disabled");
+					if (this.currentPage == (this.totalPages - 1))
+						$(".pagination .nav.next").addClass("disabled");
+
+					if (this.currentPage == 0)
+						$(".pagination .nav.prev").addClass("disabled");
+					this.showItems();
+				},
+				showItems : function() {
+					this.items.hide();
+					var base = this.perPage * this.currentPage;
+					this.items.slice(base, base + this.perPage).show();
+
+					this.updateNavigation();
+				},
+				init : function(pagcontainer, items, perPage) {
+					this.pagcontainer = pagcontainer;
+					this.currentPage = 0;
+					this.totalPages = 1;
+					this.perPage = perPage;
+					this.items = items;
+					this.createNavigation();
+					this.showItems();
+				}
+			};
+
+			// stuff it all into a jQuery method!
+			$.fn.pagify = function(perPage, itemSelector) {
+				var el = $(this);
+				var items = $(itemSelector, el);
+
+				// default perPage to 5
+				if (isNaN(perPage) || perPage === undefined) {
+					perPage = 3;
+				}
+
+				// don't fire if fewer items than perPage
+				if (items.length <= perPage) {
+					return true;
+				}
+
+				pagify.init(el, items, perPage);
+			};
+		})(jQuery);
+
+		$(".pagcontainer").pagify(6, ".single-item");
+	</script>
+</body>
+
+</html>

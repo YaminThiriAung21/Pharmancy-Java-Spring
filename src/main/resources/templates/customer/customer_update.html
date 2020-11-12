@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Customer Detail</title>
+</head>
+<body>
+
+	<div class="col-lg-12" layout:fragment="content">
+	
+		<form th:action="@{${T(pec.datacode.AdminPageInfo).CUSTOMER_UPDATE.url}}"
+			method="post" th:object="${info}" class="form-horizontal">
+			<div class="card">
+				<div class="card-header text-center">
+					<strong>Customer</strong> Detail
+				</div>
+				<div class="card-body card-block">
+
+					<input type="hidden" class="form-control" th:field="*{customer_info_id}" />
+
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label class=" form-control-label"> Customer Name 
+								<span class="text-danger">*</span>
+							</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="text" class="form-control" th:field="*{customer_name}" 
+								th:value="${info.customer_name}" onchange="clearErrorMsg();" />
+							<span class="help-block" id="name_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label class=" form-control-label"> Phone Number 
+								<span class="text-danger">*</span>
+							</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="text" class="form-control" maxLength=15 th:field="*{phone_number}" 
+								th:value="${info.phone_number}" onchange="clearErrorMsg();" /> 
+							<span class="help-block" id="phone_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label for="email" class=" form-control-label"> Email Address </label>
+						</div>
+						<div class="col-12 col-md-9">
+							<input type="text" class="form-control"
+								th:field="*{email_address}" th:value="${info.email_address}"
+								readonly />
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col col-md-3">
+							<label class=" form-control-label">Customer Address
+								<span class="text-danger">*</span>
+							</label>
+						</div>
+						<div class="col-12 col-md-9">
+							<textarea class="form-control" id="customer_address" th:field="*{customer_address}" 
+								th:value="${info.customer_address}" onchange="clearErrorMsg();"></textarea>
+							<small class="form-text text-muted" id="address_msg"></small>
+						</div>
+					</div>
+					<div class="card-footer">
+						<div class="card-block float-right">
+							<button type="submit" name="update" class="btn btn-primary btn-sm" onmouseover="clearErrorMsg()"
+								onclick="return checkValidate()">
+								<i class="fa fa-dot-circle-o"></i> Update
+							</button>
+							<button type="reset" name="cancel" class="btn btn-danger btn-sm"
+							th:onclick="|window.location.href='@{${T(pec.datacode.AdminPageInfo).CUSTOMER_LIST.url}}'|">
+							<i class="fa fa-ban"></i> Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<script type="text/javascript" layout:fragment="scriptArea">
+			
+			$(document).ready(function() {
+				$('.active').removeClass('active');
+				$('#customer-list').addClass('active');
+			});
+
+			function clearErrorMsg() {
+				var errorMsg = document.getElementById("errorMsg");
+				var successMsg = document.getElementById("successMsg");
+				if (errorMsg != null) {
+					document.getElementById("errorMsg").style.visibility = "hidden";
+					document.getElementById("errorMsg").innerHTML = "";
+					document.getElementById("errorMsg").classList.remove("alerterror");
+				}
+				if (successMsg != null) {
+					document.getElementById("successMsg").style.visibility = "hidden";
+					document.getElementById("successMsg").innerHTML = "";
+					document.getElementById("successMsg").classList.remove("alertsuccess");
+				}
+				document.getElementById("customer_name").style.borderColor = "";
+				document.getElementById("name_msg").innerHTML = "";
+				
+				document.getElementById("phone_number").style.borderColor = "";
+				document.getElementById("phone_msg").innerHTML = "";
+				
+				document.getElementById("customer_address").style.borderColor = "";
+				document.getElementById("address_msg").innerHTML = "";
+			}
+
+			function checkValidate() {
+
+				//var num = /^[0-9]+$/;
+				var num = /^(\d|,)*\.?\d*$/;
+				
+				var nameMsg = "[[${E000001}]]";
+				var phoneMsg = "[[${E000003}]]";
+				var addressMsg = "[[${E000005}]]";
+				var numMsg = "[[${E000017}]]";
+				
+				var name = document.getElementById("customer_name");
+				var phNum = document.getElementById("phone_number");
+				var address = document.getElementById("customer_address");
+				
+				if (name.value == "") {
+					document.getElementById("customer_name").style.borderColor = "red";
+					document.getElementById("name_msg").innerHTML = nameMsg;
+					name.focus();
+					return false;
+				}
+				if (phNum.value == "") {
+					document.getElementById("phone_number").style.borderColor = "red";
+					document.getElementById("phone_msg").innerHTML = phoneMsg;
+					phNum.focus();
+					return false;
+				}
+				if (phNum.value.match(num)) {
+					if (address.value == "") {
+						document.getElementById("customer_address").style.borderColor = "red";
+						document.getElementById("address_msg").innerHTML = addressMsg;
+						address.focus();
+						return false;
+					}
+				} else {
+					document.getElementById("phone_number").style.borderColor = "red";
+					document.getElementById("phone_msg").innerHTML = numMsg;
+					phNum.focus();
+					return false;	
+				}
+				return true;
+			}
+
+			function clearAll() {
+				$('#customer_name').attr('value', '');
+				$('#phone_number').attr('value', '');
+				document.getElementById("customer_address").innerHTML = "";
+			}
+		
+		</script>
+	</div>
+</body>
+</html>

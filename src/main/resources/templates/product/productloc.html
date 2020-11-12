@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Product Location Register</title>
+
+</head>
+<body>
+	<div class="col-lg-12" layout:fragment="content">
+		<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+		<p id="successMsg" th:if="${msg != null}" th:utext="${msg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+		<form th:action="@{${T(pec.datacode.AdminPageInfo).PRODUCT_LOCATION_INSERT.url}}" method="post" th:object="${productlocDto}" class="form-horizontal">
+		<div class="col-lg-12">
+			<div class="card">
+	          <div class="card-header text-center">
+					<strong>Product Location</strong> Register
+				</div>
+	       	 
+	          	<div class="card-body card-block">  
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label class=" form-control-label">Product Location Code</label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <input type="text" th:field="*{location_code}" placeholder="Enter code..." maxlength="20" onchange="clearErrorMsg()" class="form-control">
+	                        <span class="help-block" id="code_msg"></span>
+	                    </div>
+	                </div>
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label class=" form-control-label">Product Location Place</label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <textarea rows="5" th:field="*{product_location_place}" placeholder="Enter place..." maxlength="200" onchange="clearErrorMsg()" class="form-control"></textarea>
+	                        <span class="help-block" id="place_msg"></span>
+	                    </div>
+	                </div>        
+	          </div>
+	          <div class="card-footer ">
+	          	<div class="card-block float-right">
+	  			  <button type="submit" name="register"  class="btn btn-primary" onmouseover="clearErrorMsg()" onclick="return checkValidate()">Register</button>
+	         	  <button type="button" name="clear" class="btn btn-danger" onmouseover="clearErrorMsg()" onclick="this.form.reset();">Clear </button>
+	          	</div>
+	          </div>
+			</div>
+			</div>
+			</form>
+		
+		</div>
+	<script type="text/javascript" layout:fragment="scriptArea">
+		 $(document).ready(function() {
+				$('.active').removeClass('active');
+				$('#product_loc_reg').addClass('active');
+				
+			 });
+			function clearErrorMsg(){	
+				var errorMsg = document.getElementById("errorMsg");
+				var successMsg = document.getElementById("successMsg");
+				if(errorMsg != null){
+					document.getElementById("errorMsg").style.visibility = "hidden";
+					document.getElementById("errorMsg").innerHTML = "";
+					document.getElementById("errorMsg").classList.remove("alerterror");
+				}
+				if(successMsg != null){
+					document.getElementById("successMsg").style.visibility = "hidden";
+					document.getElementById("successMsg").innerHTML = "";
+					document.getElementById("successMsg").classList.remove("alertsuccess");
+				}
+				document.getElementById("code_msg").innerHTML="";
+				document.getElementById("place_msg").innerHTML="";
+				document.getElementById("location_code").style.borderColor = "";
+				document.getElementById("product_location_place").style.borderColor = "";
+			}
+			function checkValidate(){	
+				var codeMsg="[[${E000082}]]";					
+				var locationMsg="[[${E000083}]]";											
+				var locCode = document.getElementById("location_code").value.trim();
+				var locPlace = document.getElementById("product_location_place").value.trim();
+				if(locCode == ""){
+					document.getElementById("location_code").style.borderColor = "red";
+					document.getElementById("code_msg").innerHTML = codeMsg;
+					return false;
+				} else if(locPlace == ""){
+					document.getElementById("product_location_place").style.borderColor = "red";
+					document.getElementById("place_msg").innerHTML = locationMsg;
+				    return false;
+				} else {
+					return true;
+				}	
+			}
+		</script>
+</body>
+</html>

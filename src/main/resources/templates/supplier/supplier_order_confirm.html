@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Supplier Order Confirmation</title>
+</head>
+<body>
+<div class="col-lg-12" layout:fragment="content">
+		<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+		<p id="successMsg" th:if="${msg != null}" th:utext="${msg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+	<div class="col-lg-12">
+		
+	    	 
+        	 <form th:action="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_ORDER_CONFIRM.url}}" method="get" class="form-horizontal">
+	            <div class="card">
+	           
+	                	<div class="card-header text-center">
+	         	 	<strong>Product Order </strong>List
+	     		
+	               </div>
+	              	<div class="card-body card-block" th:object="${supplierOrderWrapperDto}">
+	               <div class="row m-t-30" >
+                            <div class="col-md-12">
+                                <!-- DATA TABLE-->
+                                <div class="table-responsive m-b-40" >
+                                    <table class="table table-borderless table-data3">
+                                        <thead>
+                                            <tr>
+                                            	
+                                                <th>No</th>
+                                                <th>Supplier Name</th>
+                                                <th>Product Name</th>
+                                                 <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Total Product Price</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        	
+                                            <tr th:each="dto, ind: *{supplierOrderList}">
+                                            	
+                                                <td th:text="${ind.count}"></td>
+                                                <td th:text="${supplierOrderWrapperDto.supplierOrderInfoDto.supplier_name}"></td>
+                                                <td th:text="${dto.product_name}"></td>
+                                                <td th:text="${dto.product_quantity}"></td>
+                                                <td th:text="${dto.buy_price}"></td>
+                                                <td th:text="${dto.product_total_price}"></td>
+                                            </tr>
+                                          
+                                            <tr>
+                                            	<td></td>
+                                            	<td></td>
+                                            	<td></td>
+                                            	<td></td>
+                                            	<td>Total Price</td>
+                                            	<td th:text="${supplierOrderWrapperDto.supplierOrderInfoDto.total_price}"></td>
+                                            </tr>   
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- END DATA TABLE-->
+                            </div> 
+                  </div>
+                  
+	                	
+	                	
+	                	<div class="card-footer" align="right">
+	  			  				<button type="submit" name="orderConfirm" class="btn btn-info btn-sm" onmouseover="clearErrorMsg()" onclick="return checkValidate()">Confirm Order</button>
+	                	</div>
+	             
+                  </div>
+                  </div>
+         	</form>
+     	
+      <script type="text/javascript">	
+		 	
+			function clearErrorMsg(){	
+				var errorMsg = document.getElementById("errorMsg");
+				var successMsg = document.getElementById("successMsg");
+				if(errorMsg != null){
+					document.getElementById("errorMsg").style.visibility = "hidden";
+					document.getElementById("errorMsg").innerHTML = "";
+					document.getElementById("errorMsg").classList.remove("alerterror");
+				}
+				if(successMsg != null){
+					document.getElementById("successMsg").style.visibility = "hidden";
+					document.getElementById("successMsg").innerHTML = "";
+					document.getElementById("successMsg").classList.remove("alertsuccess");
+				}
+			}
+			function checkValidate(){	
+				var nameMsg="[[${E000001}]]";					
+				var passwordMsg="[[${E000002}]]";											
+				var userName = document.getElementById("name").value.trim();
+				var password = document.getElementById("password").value.trim();
+				if(userName == ""){
+					document.getElementById("name").style.borderColor = "red";
+					document.getElementById("name_msg").innerHTML = nameMsg;
+					return false;
+				} else if(password == ""){
+					document.getElementById("password").style.borderColor = "red";
+					document.getElementById("password_msg").innerHTML = passwordMsg;
+				    return false;
+				} else {
+					return true;
+				}	
+			}
+		</script>
+	</div>    
+</div>                                         
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Office Info</title>
+</head>
+<body>
+
+	<div class="col-lg-12" layout:fragment="content">
+		<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}"
+			class="sufee-alert alert with-close alert-danger alert-dismissible fade show"></p>
+		<p id="successMsg" th:if="${msg != null}" th:utext="${msg}"
+			class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+		<form
+			th:action="@{${T(pec.datacode.AdminPageInfo).OFFICE_INFO_UPDATE.url}}"
+			method="post" th:object="${info}" enctype="multipart/form-data">
+			
+			<div class="card">
+				<div class="card-header text-center">
+				 <strong>Office Info</strong>
+				</div>
+				<div class="card-body card-block">
+					<div class="row form-group">
+						<div class="col-md-3">
+							<label for="office_code" class=" form-control-label">Office
+								Code </label>
+						</div>
+						<div class="col-md-9">
+							<input type="text" class="form-control" th:field="*{office_code}"
+								th:value="${info.office_code}" onchange="clearErrorMsg()"
+								maxlength="45" readonly /> <span class="help-block"
+								id="office_code_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-md-3">
+							<label for="name" class=" form-control-label"> Office
+								Name </label>
+
+						</div>
+						<div class="col-md-9">
+							<input type="text" class="form-control" th:field="*{office_name}"
+								th:value="${info.office_name}" onchange="clearErrorMsg()"
+								maxlength="45" /> <span class="help-block" id="office_name_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-md-3">
+							<label for="email_address" class=" form-control-label">Email
+								Address</label>
+						</div>
+						<div class="col-md-9">
+							<input type="text" class="form-control"
+								th:field="*{office_email_address}"
+								th:value="${info.office_email_address}"
+								onchange="clearErrorMsg()" maxlength="45" /> <span
+								class="help-block" id="office_email_address_msg"></span>
+						</div>
+					</div>
+
+					<input type="hidden" class="form-control"
+						th:field="*{office_info_id}" th:value="${info.office_info_id}" />
+					<div class="row form-group">
+						<div class="col-md-3">
+							<label for="city" class=" form-control-label">City</label>
+						</div>
+						<div class="col-md-9">
+							<input type="text" class="form-control" th:field="*{office_city}"
+								th:value="${info.office_city}" onchange="clearErrorMsg()"
+								maxlength="45" /> <span class="help-block" id="office_city_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-md-3">
+							<label for="phone_number" class=" form-control-label">Phone
+								Number </label>
+						</div>
+						<div class="col-md-9">
+							<input type="text" class="form-control"
+								th:field="*{office_phone_number}"
+								th:value="${info.office_phone_number}"
+								onchange="clearErrorMsg()" maxlength="45" /> <span
+								class="help-block" id="office_phone_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-md-3">
+							<label for="email" class=" form-control-label"> Address </label>
+						</div>
+						<div class="col-md-9">
+							<input type="text" class="form-control"
+								th:field="*{office_address}" th:value="${info.office_address}"
+								onchange="clearErrorMsg()" maxlength="200" /> <span
+								class="help-block" id="office_address_msg"></span>
+						</div>
+					</div>
+					<div class="row form-group">
+						<div class="col-md-3">
+							<label for="email" class=" form-control-label"> Image </label>
+						</div>
+						<div class="col-md-9">
+							<input type="file" id="file-input" name="file-input"
+								onchange="checkFile(this)" class="form-control-file"
+								th:field="*{officeimage}" /> <span class="help-block"
+								id="office_image_msg"></span>
+							<label id="fileLabel" th:text="${info.office_image_name}"></label>
+						</div>
+					</div>
+
+
+				</div>
+				<div class="card-footer">
+					<div class="card-block float-right">
+						<button type="submit" name="update" class="btn btn-info btn-md"
+							onmouseover="clearErrorMsg()" onclick="return checkValidate()">
+							<i class="fa fa-dot-circle-o"></i> Update
+						</button>
+						<button type="button" name="cancel" th:onclick="|window.location.href='@{${T(pec.datacode.AdminPageInfo).OFFICE_INFO.url}}'|"
+							class="btn btn-danger btn-md">
+							<i class="fa fa-ban"></i> Cancel
+						</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript" layout:fragment="scriptArea">
+		$(document).ready(function() {
+			$('.active').removeClass('active');
+			$('#office_update').addClass('active');
+		});
+		
+		function clearErrorMsg() {
+			var errorMsg = document.getElementById("errorMsg");
+			var successMsg = document.getElementById("successMsg");
+			if (errorMsg != null) {
+				document.getElementById("errorMsg").style.visibility = "hidden";
+				document.getElementById("errorMsg").innerHTML = "";
+				document.getElementById("errorMsg").classList
+						.remove("alerterror");
+			}
+			if (successMsg != null) {
+				document.getElementById("successMsg").style.visibility = "hidden";
+				document.getElementById("successMsg").innerHTML = "";
+				document.getElementById("successMsg").classList
+						.remove("alertsuccess");
+			}
+
+			document.getElementById("office_code").style.borderColor = "";
+			document.getElementById("office_code_msg").innerHTML = "";
+
+			document.getElementById("office_name").style.borderColor = "";
+			document.getElementById("office_name_msg").innerHTML = " ";
+
+			document.getElementById("office_email_address").style.borderColor = "";
+			document.getElementById("office_email_address_msg").innerHTML = " ";
+
+			document.getElementById("office_city").style.borderColor = "";
+			document.getElementById("office_city_msg").innerHTML = " ";
+
+			document.getElementById("office_phone_number").style.borderColor = "";
+			document.getElementById("office_phone_msg").innerHTML = " ";
+
+			document.getElementById("office_address").style.borderColor = "";
+			document.getElementById("office_address_msg").innerHTML = " ";
+
+			document.getElementById("file-input").style.borderColor = "";
+			document.getElementById("office_image_name_msg").innerHTML = "";
+		}
+		function checkValidate() {
+			var officecodeMsg = "[[${E000018}]]"
+			var officenameMsg = "[[${E000019}]]";
+			var officephoneMsg = "[[${E000021}]]";
+			var officeaddressMsg = "[[${E000022}]]";
+			var officeemailaddressMsg = "[[${E000020}]]";
+			var officecityMsg = "[[${E000023}]]";
+			var emailErrMsg = "[[${E000101}]]";
+			var phnoErrMsg = "[[${E000102}]]";
+			var imageMsg = "[[${E000103}]]";
+
+			var officecode = document.getElementById("office_code").value.trim();
+			var officename = document.getElementById("office_name").value.trim();
+			var officephone = document.getElementById("office_phone_number").value.trim();
+			var officeaddress = document.getElementById("office_address").value.trim();
+			var officeemailaddress = document
+					.getElementById("office_email_address").value.trim();
+			var officecity = document.getElementById("office_city").value.trim();
+			var imgFile = document.getElementById('file-input');
+
+			if (officecode == "") {
+				document.getElementById("office_code").style.borderColor = "red";
+				document.getElementById("office_code_msg").innerHTML = officecodeMsg;
+				$("#office_code").focus();
+				return false;
+			}
+			
+			else if (officename == "") {
+				document.getElementById("office_name").style.borderColor = "red";
+				document.getElementById("office_name_msg").innerHTML = officenameMsg;
+				$("#office_name").focus();
+				return false;
+			}
+			else if (officeemailaddress == "") {
+				document.getElementById("office_email_address").style.borderColor = "red";
+				document.getElementById("office_email_address_msg").innerHTML = officeemailaddressMsg;
+				$("#office_email_address").focus();
+				return false;
+			}
+			else if (validateEmail(officeemailaddress) == false) {
+				document.getElementById("office_email_address").style.borderColor = "red";
+				document.getElementById("office_email_address_msg").innerHTML = emailErrMsg;
+				$("#office_email_address").focus();
+				return false;
+			}
+			else if (officecity == "") {
+				document.getElementById("office_city").style.borderColor = "red";
+				document.getElementById("office_city_msg").innerHTML = officecityMsg;
+				$("#office_city").focus();
+				return false;
+			}
+			else if (officephone == "") {
+				document.getElementById("office_phone_number").style.borderColor = "red";
+				document.getElementById("office_phone_msg").innerHTML = officephoneMsg;
+				$("#office_phone_number").focus();
+				return false;
+			}
+			else if (checkPhone(officephone) == false) {
+				document.getElementById("office_phone_number").style.borderColor = "red";
+				document.getElementById("office_phone_msg").innerHTML = phnoErrMsg;
+				$("#office_phone_number").focus();
+				return false;
+			}
+			else if (officeaddress == "") {
+				document.getElementById("office_address").style.borderColor = "red";
+				document.getElementById("office_address_msg").innerHTML = officeaddressMsg;
+				$("#office_address").focus();
+				return false;
+			}
+			/* else if (imgFile.files.length == 0) {
+				document.getElementById("file-input").style.borderColor = "red";
+				document.getElementById("office_image_name_msg").innerHTML = imageMsg;
+				return false;
+			} */
+			else {
+			return true;
+			}
+		}
+		function validateEmail(officeemailaddress) {
+			const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+			return re.test(officeemailaddress);
+		}
+		function checkPhone(officephone){
+			var numbers = /^[0-9]+,?[0-9]+?$/; 
+			if(officephone.match(numbers)){
+				return true;
+			}
+			else{
+				return false;	
+			}
+		}		function checkFile(input) {
+			var imageMsg = "[[${E000103}]]";
+			var image_name = "[[${info.office_image_name}]]";
+			var imgFile = document.getElementById('file-input');
+			if (imgFile.value == "") {
+				fileLabel.innerHTML = image_name;
+			} else {
+				var ext = input.value.split('.');
+				ext = ext[ext.length - 1].toLowerCase();
+				var arrayExtensions = [ 'jpg', 'jpeg', 'png', 'bmp', 'gif' ];
+				if (arrayExtensions.lastIndexOf(ext) == -1) {
+					document.getElementById("errorMsg").className = "alerterror";
+					document.getElementById("errorMsg").style.visibility = "visible";
+					document.getElementById("errorMsg").innerHTML = image;
+					document.getElementById("errorMsg").style.display = "block";
+					input.value = '';
+					fileLabel.innerHTML = image_name;
+				}
+				var theSplit = imgFile.value.split('\\');
+				fileLabel.innerHTML = theSplit[theSplit.length - 1];
+
+			}
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Office Info</title>
+<style>
+.hidden {
+	display: none;
+}
+.modal-backdrop {
+  z-index: -1;
+}
+</style>
+</head>
+<body>
+
+	<div id="upload" class="col-lg-12" layout:fragment="content">
+	<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}"
+			class="sufee-alert alert with-close alert-danger alert-dismissible fade show"></p>
+		<p id="successMsg" th:if="${msg != null}" th:utext="${msg}"
+			class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+	
+		<form id="frm-example"
+			th:action="@{${T(pec.datacode.AdminPageInfo).OFFICE_INFO_DELETE.url}}"
+			method="get">
+			<!-- delete alert -->
+			<div class="modal fade" id="confirm-submit" tabindex="-1"
+				role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">Confirm Delete</div>
+						<div class="modal-body">Are you sure you want to delete?</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Cancel</button>
+							<input type="submit" class="btn btn-danger" value="Proceed">
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end of delete -->
+			<div id="deletecheck" class="alert alert-danger hidden"
+				data-alert="alert" style="top: 0">
+				<button class="float-right" onclick="return closing()">&times;</button>
+				<p id="focusing">
+					<strong>Please Check</strong> the check box you want to delete
+				</p>
+			</div>
+			<div class="card">
+				<div class="card-header text-center">
+					<strong>Office Info</strong>
+				</div>
+				<div class="table-responsive m-b-40 card-body card-block">
+					<table id="officeInfo" class="table table-borderless table-data3">
+						<thead>
+							<tr>
+								<th scope="col"><input type="checkbox" id="masterCheck"
+									value="checkUncheckAll"></th>
+								<th>No</th>
+								<th>Office Code</th>
+								<th>Office Name</th>
+								<th>Email Address</th>
+								<th>City</th>
+								<th>Phone Number</th>
+								<th>Office Address</th>
+								<th>Image</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="dto, ind: ${officeList}" class="active">
+								<td><input type="checkbox" name="row-check"
+									th:value="${dto.office_info_id}" /></td>
+								<td th:text="${ind.count}"></td>
+								<td th:text="${dto.office_code}"></td>
+								<td th:text="${dto.office_name}"></td>
+								<td th:text="${dto.office_email_address}"></td>
+								<td th:text="${dto.office_city}"></td>
+								<td th:text="${dto.office_phone_number}"></td>
+								<td th:text="${dto.office_address}"></td>
+								<td th:text="${dto.office_image_name}"></td>
+								<td><a
+									th:href="@{${T(pec.datacode.AdminPageInfo).OFFICE_INFO_UPDATE.url}+'/' + ${dto.office_info_id}}">Edit</a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="card-footer">
+					<div class="card-block float-right">
+
+						<input type="button" class="btn btn-danger" name="btnDelete" id="btnDelete"
+							 value="Delete" />
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<script type="text/javascript" layout:fragment="scriptArea">
+		$(document).ready(function() {
+			
+			$('.active').removeClass('active');
+			$('#office_management').addClass('active');
+			var table=$('#officeInfo').DataTable({
+				"lengthMenu" : [ 3, 5, 7, 9, 10 ]
+			});
+			
+			$(function() {
+
+				$("#btnDelete").on(
+						"click",
+						function() {
+			      var form = this;
+
+			      // Iterate over all checkboxes in the table
+			      table.$('input[type="checkbox"]').each(function(){
+			    	  
+			         // If checkbox doesn't exist in DOM
+			         if(!$.contains(document, this)){
+			            // If checkbox is checked
+			            
+			            if(this.checked){
+			               // Create a hidden element 
+			               $(form).append(
+			                  $('<input>')
+			                     .attr('type', 'hidden')
+			                     .attr('name', this.name)
+			                     .attr('id','hid')
+			                     .val(this.value)
+			               );
+			            }
+			         } 
+			      });
+			    
+			      deleteCheck();
+			      
+			   });
+			});
+			var count=0;
+			$(function() {
+
+				// Header Master Checkbox Event
+				$("#masterCheck").on(
+						"click",
+						function() {
+							var form = this;
+							if ($("input:checkbox").prop("checked")) {
+								
+								table.$('input[type="checkbox"]').each(function(){
+								$(this).prop('checked',true);
+								console.log(this);
+								});
+								
+							} else {
+								//$("input:checkbox[name='row-check']").prop("checked", false);
+								table.$('input[type="checkbox"]').each(function(){
+								$(this).prop('checked',false);
+								});
+							}
+						});
+				// Check event on each table row checkbox
+				var form=this;
+				$(this)
+				.on(
+						"change",
+						function() {
+								
+							var allCount=0;
+							var checkCount=0;
+							table.$('input[type="checkbox"]').each(function(){
+								allCount++;
+								if(this.checked){
+									checkCount++;
+								}
+								});
+
+							console.log("allcount : ",allCount);
+							console.log("checkcount : ",checkCount);
+							// If all checked manually then check master checkbox
+							if (allCount == checkCount) {
+								$("#masterCheck").prop("checked", true);
+							} else {
+								$("#masterCheck").prop("checked", false);
+							}
+						});
+	});
+});
+
+		
+		
+		function deleteCheck() {
+			
+			var total_checked_boxes = $("input:checkbox[name='row-check']:checked").length;
+			
+			var hidden = $('#upload input[type="hidden"]').length;
+			
+			var total = total_checked_boxes + hidden;
+			console.log("hidden",hidden);
+			
+			if (total == 0) {
+				document.getElementById("deletecheck").style.display = "block";
+				$("#deletecheck").fadeIn(2);
+				document.body.scrollTop = 0;
+				document.documentElement.scrollTop = 0;
+				return false;
+			} else {
+				$('input[name="btnDelete"]').attr("data-toggle", "modal");
+				$('input[name="btnDelete"]').attr("data-target", "#confirm-submit");
+			}
+		}
+
+		
+		function closing() {
+			document.getElementById("deletecheck").style.display = "none";
+			return false;
+		}
+		
+	</script>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Product Location</title>
+</head>
+<body>
+	<div class="col-lg-12" layout:fragment="content">
+		<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+		<p id="successMsg" th:if="${msg != null}" th:utext="${msg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+			
+		<form th:action="@{${T(pec.datacode.AdminPageInfo).PRODUCT_LOCATION_UPDATE.url}}" method="post" th:object="${productlocDto}" class="form-horizontal">
+			<div class="card">
+	          <div class="card-header">
+	              <strong>Product Location </strong> Update
+	          </div>
+	       	 
+	          	<div class="card-body card-block">  
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label for="*{location_code}" class=" form-control-label">Product Location Code</label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <input type="text" th:field="*{location_code}" th:value="${productlocDto.location_code}" placeholder="Enter code..." class="form-control">
+	                        <span class="help-block" id="name_msg"></span>
+	                    </div>
+	                </div>
+	                <input type="hidden" th:field="*{product_location_info_id}" th:value="${productlocDto.product_location_info_id}" class="form-control">
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label for="hf-password" class=" form-control-label">Product Location Place</label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <input type="text" th:field="*{product_location_place}" th:value="${productlocDto.product_location_place}"placeholder="Enter place..." class="form-control">
+	                        <span class="help-block" id="password_msg"></span>
+	                    </div>
+	                </div>        
+	          </div>
+	          <div class="card-footer">
+	  			  <button type="submit" name="updating" class="btn btn-info btn-sm" onmouseover="clearErrorMsg()" onclick="return checkValidate()">Update</button>
+	          </div>
+			</div>
+			 </form>
+		 <script type="text/javascript" layout:fragment="scriptArea">
+		 $(document).ready(function() {
+				$('.active').removeClass('active');
+				$('#product_loc_reg').addClass('active');
+				
+			 });
+		 	
+			function clearErrorMsg(){	
+				var errorMsg = document.getElementById("errorMsg");
+				var successMsg = document.getElementById("successMsg");
+				if(errorMsg != null){
+					document.getElementById("errorMsg").style.visibility = "hidden";
+					document.getElementById("errorMsg").innerHTML = "";
+					document.getElementById("errorMsg").classList.remove("alerterror");
+				}
+				if(successMsg != null){
+					document.getElementById("successMsg").style.visibility = "hidden";
+					document.getElementById("successMsg").innerHTML = "";
+					document.getElementById("successMsg").classList.remove("alertsuccess");
+				}
+			}
+			function checkValidate(){	
+				var nameMsg="[[${E000082}]]";					
+				var passwordMsg="[[${E000083}]]";											
+				var userName = document.getElementById("location_code").value.trim();
+				var password = document.getElementById("product_location_place").value.trim();
+				if(userName == ""){
+					document.getElementById("location_code").style.borderColor = "red";
+					document.getElementById("name_msg").innerHTML = nameMsg;
+					return false;
+				} else if(password == ""){
+					document.getElementById("product_location_place").style.borderColor = "red";
+					document.getElementById("password_msg").innerHTML = passwordMsg;
+				    return false;
+				} else {
+					return true;
+				}	
+			}
+		</script>
+		</div>
+	
+</body>
+</html>

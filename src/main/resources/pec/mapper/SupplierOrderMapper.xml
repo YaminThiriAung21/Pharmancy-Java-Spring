@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.SupplierOrderMapper">
+	<select id="getSupplierOrderList"  resultType="pec.dto.SupplierOrderInfoDto">
+		select 
+		s1.supplier_order_info_id,
+		s1.supplier_info_id,
+		s1.order_receive_date,
+		s1.total_price,
+		s1.office_info_id,
+		s1.delete_flag,
+		s1.insert_user,
+		s1.insert_date,
+		s1.update_user,
+		s1.update_date,
+		s1.order_date,
+		s2.supplier_name
+		from supplier_order_info s1 inner join supplier_info s2
+		on s1.supplier_info_id=s2.supplier_info_id
+		where s1.delete_flag=0 and s1.office_info_id = #{office_info_id}
+		order by s1.supplier_order_info_id asc
+	</select>
+	<select id="getSupplierName" resultType="pec.dto.SupplierDto">
+		select * from supplier_info where delete_flag=0
+	</select>
+	<select id="getListForUpdate" parameterType="int" resultType="pec.dto.SupplierDetailOrderInfoDto">
+		select s.supplier_detail_order_info_id,p.product_info_id,s.expire_date,s.expire_flag,
+		s.product_price,s.product_quantity,s.product_total_price,s.supplier_order_info_id,s.delete_flag,
+		s.insert_user,s.insert_date,s.update_user,s.update_date,s.product_location_id,s.manufacture_date,
+		p.product_code,p.product_name,m.medicine_type,c.category_name,pa.packaging_type,p.product_image,p.product_image_name
+		from product_info p
+		inner join supplier_detail_order_info s on p.product_info_id=s.product_info_id
+		inner join medicine_info m on p.medicine_info_id=m.medicine_info_id
+		inner join category_info c on p.category_info_id=c.category_info_id
+		inner join packaging_info pa on p.packaging_info_id=pa.packaging_info_id	
+		where s.supplier_order_info_id=#{id} 
+	</select>
+	<select id="getOrderList" parameterType="int" resultType="pec.dto.SupplierOrderInfoDto">
+		select * from supplier_order_info 
+		where supplier_order_info_id=#{id} and delete_flag=0
+	</select>
+	<update id="updateSupplierOrder" parameterType="pec.dto.SupplierOrderInfoDto">
+		update supplier_order_info
+		set 
+		supplier_info_id=#{supplier_info_id},
+		order_receive_date=#{order_receive_date},
+		total_price=#{total_price},
+		delete_flag=#{delete_flag},
+		update_user=#{update_user},
+		update_date=#{update_date}
+		where supplier_order_info_id=#{supplier_order_info_id}
+	</update>
+	<update id="updateSupplierDetailOrder" parameterType="pec.dto.SupplierDetailOrderInfoDto">
+		update supplier_detail_order_info
+		set 
+		expire_date= #{expire_date},
+		expire_flag= #{expire_flag},
+		product_price= #{product_price},
+		product_quantity= #{product_quantity},
+		product_total_price= #{product_total_price},
+		delete_flag= #{delete_flag},
+		update_user= #{update_user},
+		update_date= #{update_date},
+		manufacture_date= #{manufacture_date}
+		where supplier_order_info_id= #{supplier_order_info_id} and
+		supplier_detail_order_info_id= #{supplier_detail_order_info_id}
+	</update>
+	<delete id="deleteOrder" parameterType="int">
+		update supplier_order_info
+		set delete_flag=1
+		where supplier_order_info_id=#{id}
+	</delete>
+	<delete id="deleteDetailOrder" parameterType="int">
+		update supplier_detail_order_info
+		set delete_flag=1
+		where supplier_order_info_id=#{id}
+	</delete>
+	<select id="getListByDate" parameterType="pec.dto.SupplierOrderInfoDto" resultType="pec.dto.SupplierOrderInfoDto">
+		select 
+		s1.supplier_order_info_id,
+		s1.supplier_info_id,
+		s1.order_receive_date,
+		s1.total_price,
+		s1.office_info_id,
+		s1.delete_flag,
+		s1.insert_user,
+		s1.insert_date,
+		s1.update_user,
+		s1.update_date,
+		s1.order_date,
+		s2.supplier_name
+		from supplier_order_info s1 inner join supplier_info s2
+		on s1.supplier_info_id=s2.supplier_info_id
+		where s1.order_date between #{date_from} and #{date_to} and s1.delete_flag=0
+		order by s1.supplier_order_info_id asc
+	</select>
+	<update id="changeDeleteFlag" parameterType="pec.dto.SupplierDetailOrderInfoDto">
+		update supplier_detail_order_info
+		set delete_flag=1
+		where supplier_detail_order_info_id=#{supplier_detail_order_info_id}
+	</update>
+</mapper>

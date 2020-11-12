@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.SupplierMapper">
+	<select id="getSupplierList" resultType="pec.dto.SupplierDto">
+		select * from supplier_info where delete_flag=0 order by insert_date
+	</select>
+	 <insert id="register" parameterType="pec.dto.SupplierDto">
+		insert into supplier_info(supplier_code,supplier_name,supplier_city,supplier_address,supplier_email_address,supplier_phone_no,delete_flag,insert_user,insert_date,update_user,update_date) values(#{supplier_code},#{supplier_name},#{supplier_city},#{supplier_address},#{supplier_email_address},#{supplier_phone_no},#{delete_flag},#{insert_user},#{insert_date},#{update_user},#{update_date})
+	</insert>
+	
+	
+	<update id="update" parameterType="pec.dto.SupplierDto">
+		update supplier_info set supplier_name=#{supplier_name}, supplier_city=#{supplier_city}, supplier_address=#{supplier_address}, supplier_email_address=#{supplier_email_address}, supplier_phone_no=#{supplier_phone_no}, update_user=#{update_user}, update_date=#{update_date} where supplier_info_id=#{supplier_info_id}
+	</update>
+	
+	<!--
+	<delete id="delete" parameterType="int">
+		Delete from account where id=#{id}
+	</delete>
+	-->
+	<update id="delete" parameterType="pec.dto.SupplierDto">
+		update supplier_info set delete_flag=1 where supplier_info_id=#{supplier_info_id}
+	</update>
+	
+	<select id="getSupplierDto" resultType="pec.dto.SupplierDto"  parameterType="int">
+		select * from supplier_info where supplier_info_id=#{supplier_info_id}
+	</select> 
+	
+	
+	<select id="getDuplicateemail" parameterType="pec.dto.SupplierDto" resultType="int">
+		select count(*) from supplier_info where supplier_email_address = #{supplier_email_address} and supplier_info_id != #{supplier_info_id} and delete_flag=0
+	</select>
+	
+	<select id="getDuplicatephno" parameterType="pec.dto.SupplierDto" resultType="int">
+		select count(*) from supplier_info where supplier_phone_no = #{supplier_phone_no} and supplier_info_id != #{supplier_info_id} and delete_flag=0
+	</select>
+	<select id="getDuplicatesuppliername" parameterType="pec.dto.SupplierDto" resultType="int">
+		select count(*) from supplier_info where supplier_name = #{supplier_name} and supplier_info_id != #{supplier_info_id} and delete_flag=0
+	</select>
+	
+	<!-- Registration Duplicate -->
+	<select id="DuplicateRegCode" parameterType="pec.dto.SupplierDto" resultType="int">
+		select count(*) from supplier_info where supplier_code = #{supplier_code} and delete_flag=0
+	</select>
+	<select id="DuplicateRegName" parameterType="pec.dto.SupplierDto" resultType="int">
+		select count(*) from supplier_info where supplier_name = #{supplier_name} and delete_flag=0
+	</select>
+	<select id="DuplicateRegMail" parameterType="pec.dto.SupplierDto" resultType="int">
+		select count(*) from supplier_info where supplier_email_address = #{supplier_email_address} and delete_flag=0
+	</select>
+	<select id="DuplicateRegPhone" parameterType="pec.dto.SupplierDto" resultType="int">
+		select count(*) from supplier_info where supplier_phone_no = #{supplier_phone_no} and delete_flag=0
+	</select>
+	
+</mapper>

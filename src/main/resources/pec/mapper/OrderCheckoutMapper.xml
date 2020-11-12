@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.OrderCheckoutMapper">
+
+	<insert id="placeOrder" parameterType="pec.dto.CustomerOrderInfoDto">
+		<selectKey resultType="int" keyProperty="customer_order_info_id" order="AFTER">
+			SELECT MAX(customer_order_info_id) FROM customer_order_info
+		</selectKey>
+		insert into customer_order_info (login_user_info_id,customer_order_date,total_price,office_info_id,delete_flag,insert_user,insert_date,update_user,update_date) 
+		values (#{login_user_info_id},#{customer_order_date},#{total_price},#{office_info_id},#{delete_flag},#{insert_user},#{insert_date},#{update_user},#{update_date})
+	</insert>
+	
+	 <insert id="checkoutOrder" parameterType="pec.dto.CustomerDetailOrderInfoDto">
+		insert into customer_detail_order_info (product_info_id, product_quantity,customer_order_info_id,delete_flag,insert_user,insert_date,update_user,update_date, product_price,product_total_price)
+		values (#{product_info_id},#{product_quantity},#{customer_order_info_id},#{delete_flag},#{insert_user},#{insert_date},#{update_user},#{update_date},#{product_price},#{product_total_price})
+	</insert> 
+	<select id="getQuantity" parameterType="java.lang.Integer" resultType="pec.dto.InventoryInfoDto">
+		select * from InventoryInfo where product_info_id=#{Id}
+	</select>
+	
+</mapper>

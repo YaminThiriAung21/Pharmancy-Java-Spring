@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title th:text="${T(pec.datacode.AdminPageInfo).LOGIN.title}">Login</title>
+	<!-- Fontfaces CSS-->
+	<link th:href="@{/animsition/animsition.min.css}" media="all">
+	<link th:href="@{/css/font-face.css}" rel="stylesheet" media="all">
+    <link rel="stylesheet" th:href="@{https://colorlib.com/polygon/cooladmin/vendor/font-awesome-4.7/css/font-awesome.min.css}" media="all">
+    <link rel="stylesheet" th:href="@{https://colorlib.com/polygon/cooladmin/vendor/font-awesome-5/css/fontawesome-all.min.css}"media="all">
+    <!-- Bootstrap CSS-->
+    <link th:href="@{https://colorlib.com/polygon/cooladmin/vendor/bootstrap-4.1/bootstrap.min.css}" rel="stylesheet" media="all">
+
+    <!-- Vendor CSS-->
+    <link th:href="@{/vendor/animsition/animsition.min.css}" rel="stylesheet" media="all">
+    <link th:href="@{/vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css}" rel="stylesheet" media="all">
+    <link th:href="@{/vendor/wow/animate.css}" rel="stylesheet" media="all">
+    <link th:href="@{/vendor/css-hamburgers/hamburgers.min.css}" rel="stylesheet" media="all">
+    <link th:href="@{/vendor/slick/slick.css}" rel="stylesheet" media="all">
+    <link th:href="@{/vendor/select2/select2.min.css}" rel="stylesheet" media="all">
+    <link th:href="@{/vendor/perfect-scrollbar/perfect-scrollbar.css}" rel="stylesheet" media="all">
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css}" media="all">  
+    <!-- Main CSS-->
+    <!-- <link th:href="@{https://colorlib.com/polygon/cooladmin/css/theme.css}" rel="stylesheet" media="all">
+    --> 
+    <link th:href="@{css/theme.css}" rel="stylesheet" media="all">
+    <script data-cfasync="false" th:src="@{https://colorlib.com/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animsition/3.5.2/css/animsition.css" ></link>
+    <style>
+	body {
+	  display: grid;
+	  place-items: center;
+	  height: 60vh;
+	}
+    </style>
+</head>
+<body>	
+	<div class="col-lg-6">
+		<div class="card">
+          <div class="card-header">
+              <strong>ADMIN PANEL LOGIN</strong> 
+          </div>
+          <form th:action="@{/}" method="post" class="form-horizontal">
+          	
+          	<div class="card-body card-block">  
+          	
+             	<div class="alert alert-danger" th:if="${displayMessage != null}">
+		  			<div th:utext="${displayMessage}" ></div>
+		  		</div>
+		  		
+                <div class="row form-group">
+                    <div class="col col-md-3">
+                        <label for="log_email_address" class=" form-control-label">Email</label>
+                    </div>
+                    <div class="col-12 col-md-9">
+                        <input type="text" id="log_email_address" onchange="clearMsg()" name="email" placeholder="Enter Email..." class="form-control">
+                        <span class="help-block" id="log_email_msg"></span>
+                    </div>
+                </div>
+                
+                <div class="row form-group">
+                    
+                    <div class="col col-md-3">
+                        <label for="log_password" class=" form-control-label">Password</label>
+                    </div>
+                    
+                    <div class="col-12 col-md-9">
+                        <input type="password" id="log_password" onchange="clearMsg()" name="password" placeholder="Enter Password..." class="form-control">
+                        <span class="help-block" id="log_password_msg"></span>
+                    </div>
+                </div>        
+          </div>
+          
+          <div class="card-footer">
+              <button type="submit" name="Login" class="btn btn-info btn-sm" onclick="return checkLogin()">
+                  <i class="fa fa-sign-in-alt"></i> Login
+              </button>
+  
+          </div>
+          
+          </form>
+      </div>
+      
+      
+	</div>
+	
+	<script type="text/javascript" layout:fragment="scriptArea">
+    
+		function clearMsg() {
+			document.getElementById("log_email_address").style.borderColor = "";
+	    	document.getElementById("log_email_msg").innerHTML = "";
+	    	document.getElementById("log_password").style.borderColor = "";
+	    	document.getElementById("log_password_msg").innerHTML = "";
+		}
+	
+      function checkLogin() {
+    	  var passwordMsg = "[[${E000002}]]";
+    	  var emailMsg = "[[${E000004}]]";
+    	  var emailValidMsg = "[[${E000011}]]";
+    	  var passwordIncorrect = "[[${E000114}]]";
+    	  var accountUnable = "[[${E000115}]]";
+    	  
+    	  
+    	  var email = document.getElementById("log_email_address");
+    	  var password = document.getElementById("log_password");
+
+    	  if (email.value == "") {
+    	  document.getElementById("log_email_address").style.borderColor = "red";
+    	  document.getElementById("log_email_msg").innerHTML = emailMsg;
+    	  email.focus();
+    	  return false;
+    	  }
+    	  if (email.value.indexOf("@", 0) < 0) {
+    	  document.getElementById("log_email_address").style.borderColor = "red";
+    	  document.getElementById("log_email_msg").innerHTML = emailValidMsg;
+    	  email.focus();
+    	  return false;
+    	  }
+    	  if (email.value.indexOf(".", 0) < 0) {
+    	  document.getElementById("log_email_address").style.borderColor = "red";
+    	  document.getElementById("log_email_msg").innerHTML = emailValidMsg;
+    	  email.focus();
+    	  return false;
+    	  }
+    	  if (password.value == "") {
+    	  document.getElementById("log_password").style.borderColor = "red";
+    	  document.getElementById("log_password_msg").innerHTML = passwordMsg;
+    	  password.focus();
+    	  return false;
+    	  }
+    	  
+    	  }
+      
+      </script>
+	 
+</body>
+</html>

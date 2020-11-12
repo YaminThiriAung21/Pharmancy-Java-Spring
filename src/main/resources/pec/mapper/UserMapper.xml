@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.UserMapper">
+
+<!-- 
+ 	- Customer Login Form 9/9/2020
+ 	- 
+ 	- @author Nyi Min Aye
+ 	- -->
+	<select id="getLoginEmployeeInfo" parameterType="java.lang.String" resultType="pec.dto.CustomerInfoDto">
+		select l.login_user_info_id, l.password, l.office_info_id
+		from login_user_info l 
+		inner join employee_info e
+		on e.login_user_info_id = l.login_user_info_id 
+		where l.email_address = #{log_email_address} AND l.delete_flag = 0 AND e.permit_order = 'yes' AND e.job_status = 'Active'
+
+	</select>
+
+	<select id="getLoginCustomerInfo" parameterType="java.lang.String" resultType="pec.dto.CustomerInfoDto">
+		select email_address, password, role, login_user_info_id
+		from login_user_info
+		where email_address = #{log_email_address} AND delete_flag = 0 AND role = 'USER'
+	</select>
+	
+<!-- 
+   - Customer Register Form 9/9/2020
+   - 
+   - @author Htet Wai Yan Aung
+   - -->	
+	<insert id="loginUser" parameterType="pec.dto.CustomerInfoDto">
+		insert into login_user_info
+		(email_address,password,role,office_info_id,delete_flag,insert_user,insert_date,
+		update_user,update_date) 
+		values
+		(#{email_address},#{password},#{role},#{office_info_id},#{delete_flag},#{insert_user},#{insert_date},
+		#{update_user},#{update_date})
+	</insert>
+	
+	<select id="getMaxLogin_user_id" resultType="int" parameterType="pec.dto.CustomerInfoDto">
+		select login_user_info_id 
+		from login_user_info
+		where email_address = #{email_address} AND role = #{role}
+	</select>
+	
+	<insert id="signup" parameterType="pec.dto.CustomerInfoDto">
+		<!-- <selectKey resultType="int" keyProperty="getMaxLogin_user_id" order="AFTER">
+			select max(login_user_info_id)
+			from login_user_info
+		</selectKey> -->
+		insert into customer_info
+		(customer_info_id,customer_name,phone_number,customer_address,login_user_info_id,
+		delete_flag,insert_user,insert_date,update_user,update_date) 
+		values
+		(#{login_user_info_id},#{customer_name},#{phone_number},#{customer_address},#{login_user_info_id},
+		#{delete_flag},#{insert_user},#{insert_date},#{update_user},#{update_date})
+	</insert>
+	
+	<select id="getDuplicate" parameterType="pec.dto.CustomerInfoDto" resultType="int">
+		select COUNT(*) 
+		from login_user_info 
+		where email_address = #{email_address}
+	</select>
+	
+</mapper>

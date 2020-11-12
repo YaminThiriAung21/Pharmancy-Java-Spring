@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.ProductInfoMapper">
+	<select id="getProductList" resultType="pec.dto.ProductInfoDto">
+		select 
+		product_info_id, product_code, product_name, description, ingredient, manufacture, medicine_code, category_name, sell_price, buy_price, packaging_type 
+		from product_info
+		inner join category_info on category_info.category_info_id = product_info.category_info_id
+		inner join medicine_info on medicine_info.medicine_info_id = product_info.medicine_info_id
+		inner join office_info on office_info.office_info_id = product_info.office_info_id
+		inner join packaging_info on packaging_info.packaging_info_id = product_info.packaging_info_id
+		where product_info.delete_flag='0' and product_info.office_info_id = #{office_info_id}
+	</select>
+	
+	<select id="getMedicineInfoList" resultType="pec.dto.MedicineInfoDto">
+		SELECT
+		*
+		FROM
+		medicine_info where delete_flag='0'
+         
+	</select>
+	
+	<select id="getCategoryInfoList" resultType="pec.dto.CategoryDto">
+		SELECT
+		*
+		FROM
+		category_info where delete_flag='0'
+         
+	</select>
+	
+	<select id="getPackagingList" resultType="pec.dto.PackagingInfoDto">
+		SELECT
+		*
+		FROM
+		packaging_info where delete_flag='0'
+         
+	</select>
+	
+	<insert id="addProduct" parameterType="pec.dto.ProductInfoDto">
+		<selectKey resultType="int" keyProperty="product_info_id" order="AFTER">
+			SELECT MAX(product_info_id) FROM product_info
+		</selectKey>
+		insert into product_info(office_info_id,product_code, product_name, description, ingredient, manufacture, medicine_info_id, category_info_id, sell_price, buy_price, product_image, product_image_name, packaging_info_id, delete_flag,insert_user,insert_date,update_user,update_date)	
+		values(#{office_info_id},#{product_code},#{product_name},#{description},#{ingredient},#{manufacture},#{medicine_info_id},#{category_info_id},#{sell_price},#{buy_price},#{product_image},#{product_image_name},#{packaging_info_id}, 0,#{insert_user},#{insert_date},#{update_user},#{update_date})	
+	</insert>
+	
+	<insert id="addProductQuantity" parameterType="pec.dto.InventoryInfoDto">
+		insert into inventory_info(product_info_id, office_info_id, total_quantity, total_damage_quantity, total_expired_quantity, delete_flag,insert_user,insert_date,update_user,update_date)	
+		values(#{product_info_id},#{office_info_id},#{total_quantity},#{total_damage_quantity},#{total_expired_quantity},#{delete_flag},#{insert_user},#{insert_date},#{update_user},#{update_date})	
+	</insert>
+	
+	<select id="getProduct" resultType="pec.dto.ProductInfoDto">
+		select * from product_info
+		where product_info_id=#{product_info_id}
+	</select>
+	
+	<update id="updateProduct" parameterType="pec.dto.ProductInfoDto">
+		update product_info 
+		set product_name=#{product_name}, description=#{description}, ingredient=#{ingredient}, manufacture=#{manufacture}, medicine_info_id=#{medicine_info_id}, category_info_id=#{category_info_id}, sell_price=#{sell_price}, buy_price=#{buy_price}, packaging_info_id=#{packaging_info_id}, update_user=#{update_user}, update_date=#{update_date}		
+		where product_info_id=#{product_info_id}
+	</update>
+	
+	<update id="updateProductWithImage" parameterType="pec.dto.ProductInfoDto">
+		update product_info
+		set product_name=#{product_name}, description=#{description}, ingredient=#{ingredient}, manufacture=#{manufacture}, medicine_info_id=#{medicine_info_id}, category_info_id=#{category_info_id}, sell_price=#{sell_price}, buy_price=#{buy_price}, product_image=#{product_image}, product_image_name=#{product_image_name}, packaging_info_id=#{packaging_info_id}		
+		where product_info_id=#{product_info_id}
+	</update>
+	
+ 	<update id="deleteProduct" parameterType="pec.dto.ProductInfoDto">
+		update product_info set delete_flag='1' where product_info_id=#{product_info_id}
+	</update> 
+	
+	<select id="getDuplicate" parameterType="pec.dto.MedicineInfoDto" resultType="int">
+		select count(*) from product_info where product_code = #{product_code} and delete_flag=0
+	</select>
+</mapper>

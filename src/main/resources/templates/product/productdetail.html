@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/auth_user_layout">
+<head>
+<title>Product Detail</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<style>
+.alert-success {
+color: #ff0000;
+background-color: #ff8080;
+border-color: #ff8080; }
+</style>
+</head>
+<body>
+	<div class="col-md-12 mb-0" layout:fragment="menuTitle">
+		<a th:href="@{${T(pec.datacode.UserPageInfo).USER_Home.url}+'?top'}">Home</a>
+		<span class="mx-2 mb-0">/</span>
+		<a th:href="@{${T(pec.datacode.UserPageInfo).Product_list.url}}">Product List</a>
+		<span class="mx-2 mb-0">/</span>
+		<strong class="text-black">Product Detail</strong>
+	</div>
+	<div class="container" layout:fragment="content">
+	<div th:utext="${msg}"></div>
+	<p id="errorMsg" class="sufee-alert alert with-close alert-success alert-dismissible fade"></p>
+	<form  method="post" th:object="${prod}" th:action="@{${T(pec.datacode.UserPageInfo).Cart.url}}">
+		<div class="form-group">
+		<div class="site-section">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-5 mr-auto">					
+						<div class="border text-center">
+							<img th:src="@{'/images/product_image/'+${prod.product_image_name}}" class="img-fluid p-5" >
+						</div>
+					</div>
+					<div class="col-md-6">
+						<!-- <h2 class="text-black" th:text="${prod.product_name}"></h2> <br> -->
+						<input type="hidden" th:value="${prod.product_info_id}" name="id" />
+						<h2 class="text-black" th:text="${prod.product_name}"></h2> <br>
+						<h4 class="text-black" th:text="${prod.product_code}"></h4> <br>
+						<p>
+							<strong class="text-primary h4" th:text="'$'+${prod.sell_price}"></strong>
+						</p>
+						<input type="hidden" th:value="${prod.total_quantity}" id="totalQty"/>
+						<div class="mb-5">
+							<div class="input-group mb-3" style="max-width: 220px;">
+								<div class="input-group-prepend">
+									<button class="btn btn-outline-primary js-btn-minus"
+										type="button" onmouseover="clearErrorMsg()" onclick="checkMinusValidate()">&minus;</button>
+								</div>
+								<input type="text" value="1" name="quantity" class="form-control text-center" 
+									placeholder="" aria-label="Example text with button addon"
+									aria-describedby="button-addon1" id="qty" onkeydown="clearErrorMsg()" onkeyup="checkValue()"
+									onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
+								<div class="input-group-append">
+									<button  class="btn btn-outline-primary js-btn-plus"
+										type="button" onmouseover="clearErrorMsg()" onclick="checkValidate()" >&plus;</button>
+								</div>								
+							</div>
+						</div>
+						<p>
+							<input type="submit" class="buy-now btn btn-sm height-auto px-4 py-3 btn-primary"
+								value="Add To Cart" name="addToCart">								
+						</p>
+						<div class="mt-5">
+							<ul class="nav nav-pills mb-3 custom-pill" id="pills-tab"
+								role="tablist">								
+								<li class="nav-item"><a class="nav-link active"
+									id="pills-profile-tab" data-toggle="pill" href="#pills-profile"
+									role="tab" aria-controls="pills-profile" aria-selected="true">Additional Info</a>
+								</li>
+								<li class="nav-item"><a class="nav-link"
+									id="pills-home-tab" data-toggle="pill" href="#pills-home"
+									role="tab" aria-controls="pills-home" aria-selected="false">Description</a>
+								</li>
+							</ul>
+							<div class="tab-content" id="pills-tabContent">								
+								<div class="tab-pane fade show active" id="pills-profile" role="tabpanel"
+									aria-labelledby="pills-profile-tab">
+									<table class="table custom-table">
+										<tbody>
+											<tr>
+												<td>Medicine Type</td>
+												<td class="bg-light" th:text="${prod.medicine_type}"></td>
+											</tr>
+											<tr>
+												<td>Medicine Code</td>
+												<td class="bg-light" th:text="${prod.medicine_code}"></td>
+											</tr>
+											<tr>
+												<td>Ingredient</td>
+												<td class="bg-light" th:text="${prod.ingredient}"></td>
+											</tr>
+											<tr>
+												<td>Category Name</td>
+												<td class="bg-light" th:text="${prod.category_name}"></td>
+											</tr>
+											<tr>
+												<td>Manufacture</td>
+												<td class="bg-light" th:text="${prod.manufacture}"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<div class="tab-pane fade" id="pills-home"
+									role="tabpanel" aria-labelledby="pills-home-tab">
+									<table class="table custom-table">										
+										<tbody>
+											<tr>												
+												<td th:text="${prod.description}"></td>
+											</tr>											
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+	</div>
+	
+	<script type="text/javascript" layout:fragment="scriptArea">
+	
+	function clearErrorMsg(){	
+		var errorMsg = document.getElementById("errorMsg");
+		if(errorMsg != null){
+			document.getElementById("errorMsg").innerHTML = "";
+			document.getElementById("errorMsg").classList.remove("show");
+		}
+	}
+	
+	function checkValidate(){
+		var Msg="[[${E000081}]]";										
+		var qty = parseInt(document.getElementById('qty').value);
+		var total = document.getElementById('totalQty').value;
+		if (qty < total){
+			qtyNew = qty + 1;
+			document.getElementById('qty').value = qtyNew;
+			return true;
+		} else if(qty >= total){
+			document.getElementById('errorMsg').classList.add("show");
+			document.getElementById('errorMsg').innerHTML = Msg;
+			return false;
+		} else {
+			return true;
+		}	
+	}
+	function checkMinusValidate(){				
+		var qty = parseInt(document.getElementById('qty').value);
+		var total = document.getElementById('totalQty').value;
+		if (qty > 1){
+			qtyNew = qty - 1;
+			document.getElementById('qty').value = qtyNew;
+		} else {
+			return true;
+		}	
+	}
+	
+	function checkValue(){
+		var Msg="[[${E000081}]]";										
+		var qty = parseInt(document.getElementById('qty').value);
+		var total = document.getElementById('totalQty').value;
+		if(qty >= total){
+			document.getElementById('errorMsg').classList.add("show");
+			document.getElementById('errorMsg').innerHTML = Msg;
+			return false;
+		} else {
+			return true;
+		}	
+	}
+	
+	function isNumberKey(evt){
+	    var charCode = (evt.which) ? evt.which : evt.keyCode
+	    if (charCode > 31 && (charCode < 48 || charCode > 57))
+	        return false;
+	    return true;
+	}
+	
+	</script>
+</body>
+</html>

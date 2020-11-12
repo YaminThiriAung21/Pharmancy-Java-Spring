@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+	layout:decorator="common/auth_user_layout">
+<head>
+<title>Pharmative &mdash; Colorlib Template</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+</head>
+<body>
+	<div class="col-md-12 mb-0" layout:fragment="menuTitle">
+		<a th:href="@{${T(pec.datacode.UserPageInfo).USER_Home.url}+'?top'}">Home</a> <span class="mx-2 mb-0">/</span>
+		<a th:href="@{${T(pec.datacode.UserPageInfo).Product_list.url}}">Product List</a> <span class="mx-2 mb-0">/</span>
+		<strong class="text-black">Cart</strong>
+	</div>
+	<div class="container" layout:fragment="content">
+		<div class="site-section">
+			<div class="container">
+			<form class="col-md-12" th:action="@{${T(pec.datacode.UserPageInfo).CustomerOrder.url}}" method="post">
+				<div class="row mb-5" th:object="${customerDetailWarpper}">
+					
+						<div class="site-blocks-table">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th class="product-thumbnail">Image</th>
+										<th class="product-name">Product</th>
+										<th class="product-price">Price</th>
+										<th class="product-quantity">Quantity</th>
+										<th class="product-total">Total</th>
+										<th class="product-remove">Remove</th>
+									</tr>
+								</thead>
+								<tbody>
+								
+									<tr th:each="dto,ind:*{cartList}">
+										<td class="product-thumbnail">
+										<input type="hidden" th:field="*{cartList[__${ind.index}__].product_info_id}"/>
+										<input type="hidden" th:field="*{cartList[__${ind.index}__].product_image_name}"/>
+										<input type="hidden" th:field="*{cartList[__${ind.index}__].product_name}"/>
+										<input type="hidden" th:field="*{cartList[__${ind.index}__].product_price}"/>
+										<input type="hidden" th:value="${dto.product_total_price}+ ${ind.index}" th:field="*{cartList[__${ind.index}__].product_total_price}" th:id="prd_total_price+ ${ind.index}"/>
+										<img th:src="@{'../images/product_image/'+${dto.product_image_name}}" alt="Image" class="img-fluid">
+										</td>
+										<td class="product-name" th:text="${dto.product_name}" th:id= "product_name +${ind.index}">
+											<h2 class="h5 text-black"></h2>
+										</td>
+										<td th:text="${dto.product_price}" th:value="${dto.product_price}" th:id= "product_price +${ind.index}"></td>
+										<td>
+											<div class="input-group mb-3" style="max-width: 120px;">
+												<div class="input-group-prepend">
+													<button class="btn btn-outline-primary"
+														type="button" th:id="${ind.index}" onClick="minus_click(this.id)">&minus;</button>
+												</div>
+												<input type="text" class="form-control text-center" th:name="cartList[__${ind.index}__].product_quantity"
+													th:value="${dto.product_quantity}"  th:id= "product_quantity+ ${ind.index}" placeholder=""
+													aria-label="Example text with button addon"
+													aria-describedby="button-addon1" readonly >
+												<div class="input-group-append">
+													<button class="btn btn-outline-primary"
+														type="button" th:id="${ind.index}" onClick="plus_click(this.id)">&plus;</button>
+												</div>
+											</div>
+
+										</td>
+										<td th:text="${dto.product_total_price}" th:value="${dto.product_total_price}+ ${ind.index}" th:id= "product_total_price+ ${ind.index}">										
+										</td>
+										
+										<td><button class="btn btn-outline-primary" name="remove"
+														type="submit" th:id="${ind.index}" onClick="return remove_list(this.id)">X</button></td>
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+					
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="row mb-5">
+							<div class="col-md-6 mb-3 mb-md-0">
+								<a th:href="@{${T(pec.datacode.UserPageInfo).Product_list.url}}" class="btn btn-outline-primary btn-md btn-block">Continue
+									Shopping</a>
+							</div>
+
+						</div>
+
+					</div>
+					<div class="col-md-6 pl-5">
+						<div class="row justify-content-end">
+							<div class="col-md-7" th:object="${customerOrderDto}">
+								<div class="row">
+									<div class="col-md-12 text-right border-bottom mb-5">
+										<h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+									</div>
+								</div>
+<!-- 								<div class="row mb-3"> -->
+<!-- 									<div class="col-md-6"> -->
+<!-- 										<span class="text-black">Subtotal</span> -->
+<!-- 									</div> -->
+<!-- 									<div class="col-md-6 text-right"> -->
+<!-- 										<strong class="text-black" id="total"></strong> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+								<input type="hidden" th:field="*{total_price}"/>
+								<input type="hidden" id="rowIndex" th:field="*{rowIndex}">
+								<div class="row mb-5">
+									<div class="col-md-6">
+										<span class="text-black">Total</span>
+									</div>
+									<div class="col-md-6 text-right">
+										<strong class="text-black" id="total"></strong>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-12">
+										<button class="btn btn-primary btn-lg btn-block" name="checkOut" th:if="${orderListSize>0}">Proceed To
+											Checkout</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				</form>
+			</div>	
+		</div>
+
+	</div>
+<script type="text/javascript" layout:fragment="scriptArea">
+var orderSize="[[${orderListSize}]]";	
+
+var sub_total = 0;
+for (i = 0; i < orderSize; i++) {
+	var total_price = document.getElementById("product_total_price" + i).innerHTML;
+	sub_total = parseInt(total_price) + parseInt(sub_total); 		
+		
+}
+console.log('sub total price'+sub_total)
+ document.getElementById("total").innerHTML = sub_total;
+ document.getElementById("total_price").value = sub_total;
+
+
+
+function minus_click(clicked_id)
+{	
+	var quan = document.getElementById("product_quantity" + clicked_id).value;
+	if(quan > 1){
+		document.getElementById("product_quantity" + clicked_id).value= parseInt(quan)-1 ;
+	    var price = document.getElementById("product_price" + clicked_id).innerHTML;
+	    document.getElementById("product_total_price" + clicked_id).innerHTML = document.getElementById("product_quantity" + clicked_id).value * price;
+	    
+	    document.getElementById("prd_total_price" + clicked_id).value = document.getElementById("product_quantity" + clicked_id).value * price;
+		  
+	} 
+	
+	var sub_total = 0;
+	for (i = 0; i < orderSize; i++) {
+		var total_price = document.getElementById("product_total_price" + i).innerHTML;
+		sub_total = parseInt(total_price) + parseInt(sub_total); 		
+			
+	}
+	 document.getElementById("total").innerHTML = sub_total;
+	 document.getElementById("total_price").value = sub_total;
+	}
+	
+function plus_click(clicked_id)
+{	
+	var quant = document.getElementById("product_quantity" + clicked_id).value;
+	if(quant < 10){
+		document.getElementById("product_quantity" + clicked_id).value= parseInt(quant)+1 ;
+	    var price = document.getElementById("product_price" + clicked_id).innerHTML;
+	    document.getElementById("product_total_price" + clicked_id).innerHTML = document.getElementById("product_quantity" + clicked_id).value * price;
+	    document.getElementById("prd_total_price" + clicked_id).value = document.getElementById("product_quantity" + clicked_id).value * price;
+		
+	}
+	var sub_total = 0;
+	for (i = 0; i < orderSize; i++) {
+		var total_price = document.getElementById("product_total_price" + i).innerHTML;
+		sub_total = parseInt(total_price) + parseInt(sub_total); 		
+			
+	}
+	 document.getElementById("total").innerHTML = sub_total;
+	 document.getElementById("total_price").value = sub_total;
+	}
+	
+function remove_list(row_id)
+{
+	document.getElementById("rowIndex").value = row_id;
+	return true;
+}
+</script>
+
+</body>
+</html>

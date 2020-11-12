@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Product Information</title>
+<style>
+	.hidden {
+		display: none;
+	}
+	.modal-backdrop {
+	  z-index: -1;
+	}
+</style>
+</head>
+<body>
+<div class="col-lg-12" layout:fragment="content">
+	<div id="deletecheck" class="alert alert-danger hidden" data-alert="alert" style="top: 0">
+		<button class="float-right" onclick="return closing()">&times;</button>
+	    <p id="focusing">
+			<strong>Please Check</strong> the check box you want to delete
+		</p>
+	</div>
+	<div id="dis">
+	<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}" class="sufee-alert alert with-close alert-danger alert-dismissible fade show"></p>
+	<p id="successMsg" th:if="${msg != null}" th:utext="${msg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+	</div>
+	
+	<div class="card">
+		<div class="card-header text-center">
+	    	<strong>Add Product</strong> Information
+	   	</div>
+	    <form th:action="@{${T(pec.datacode.AdminPageInfo).PRODUCT_INSERT.url}}" method="post" th:object="${productInfoDto}" class="form-horizontal" enctype="multipart/form-data">
+	    	<div class="card-body card-block">  
+	        	<div class="row form-group">
+	            	<div class="col col-md-3">
+	                	<label for="hf-email" class=" form-control-label">Product Code</label><span class="text-danger">*</span>
+	               	</div>
+	                <div class="col-12 col-md-9">
+	                	<input type="text" th:field="*{product_code}" placeholder="Enter Product code..." class="form-control" onchange="clearErrorMsg()" maxlength=45>
+	                    <span class="help-block" id="productcode_msg"></span>
+	               	</div>
+	           	</div>
+	            <div class="row form-group">
+	            	<div class="col col-md-3">
+	                	<label for="hf-email" class=" form-control-label">Product Name</label><span class="text-danger">*</span>
+	               	</div>
+	                <div class="col-12 col-md-9">
+	                	<input type="text" th:field="*{product_name}" placeholder="Enter Product Name..." class="form-control" onchange="clearErrorMsg()" maxlength=45>
+	                	<span class="help-block" id="productname_msg"></span>
+	               	</div>
+	          	</div> 
+	            <div class="row form-group">
+					<div class="col col-md-3">
+						<label for="textarea-input" class=" form-control-label">Description</label><span class="text-danger">*</span>
+					</div>
+					<div class="col-12 col-md-9">
+						<textarea name="description" th:field="*{description}" rows="9" placeholder="Description..." class="form-control" onchange="clearErrorMsg()" maxlength=225></textarea>
+						<span class="help-block" id="description_msg"></span>
+					</div>
+				</div>   
+				<div class="row form-group">
+					<div class="col col-md-3">
+						<label for="textarea-input" class=" form-control-label">Ingredient</label><span class="text-danger">*</span>
+					</div>
+					<div class="col-12 col-md-9">
+						<textarea name="ingredient" th:field="*{ingredient}" rows="9" placeholder="Ingredient..." class="form-control" onchange="clearErrorMsg()" maxlength=225></textarea>
+						<span class="help-block" id="ingredient_msg"></span>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col col-md-3">
+						<label for="text-input" class=" form-control-label">Manufacture</label><span class="text-danger">*</span>
+					</div>
+					<div class="col-12 col-md-9">
+						<input type="text" th:field="*{manufacture}" name="manufacture" placeholder="Manufacture" class="form-control" onchange="clearErrorMsg()" maxlength=45>
+						<span class="help-block" id="manufacture_msg"></span>
+					</div>
+				</div>  
+				<div class="row form-group">
+					<div class="col col-md-3">
+						<label for="select" class=" form-control-label">Medicine Type</label><span class="text-danger">*</span>
+					</div>
+					<div class="col-12 col-md-9">
+						<select th:field="*{medicine_info_id}" class="form-control">
+							<option th:each="medicine_dto:${medicinelist}" th:value="${medicine_dto.medicine_info_id}" th:text="${medicine_dto.medicine_type}"></option>
+						</select>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col col-md-3">
+						<label for="select" class=" form-control-label">Category Name</label><span class="text-danger">*</span>
+					</div>
+					<div class="col-12 col-md-9">
+						<select th:field="*{category_info_id}" class="form-control">
+							<option th:each="category_dto:${categorylist}" th:value="${category_dto.category_info_id}" th:text="${category_dto.category_name}"></option>
+						</select>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col col-md-3">
+						<label for="text-input" class=" form-control-label">Sell Price</label><span class="text-danger">*</span>
+					</div>
+					<div class="col-12 col-md-9">
+						<input type="text" th:field="*{sell_price}" name="sell_price" placeholder="Sell Price" class="form-control" onchange="clearErrorMsg()" maxlength=38>
+						<span class="help-block" id="sellprice_msg"></span>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col col-md-3">
+						<label for="text-input" class=" form-control-label">Buy Price</label><span class="text-danger">*</span>
+					</div>
+					<div class="col-12 col-md-9">
+						<input type="text" th:field="*{buy_price}" name="buy_price" placeholder="Buy Price" class="form-control" onchange="clearErrorMsg()" maxlength=38>
+						<span class="help-block" id="buyprice_msg"></span>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col col-md-3">
+						<label for="select" class=" form-control-label">Packaging Type</label><span class="text-danger">*</span>
+					</div>
+					<div class="col-12 col-md-9">
+						<select th:field="*{packaging_info_id}" class="form-control" required>
+							<option th:each="packaging_dto:${packaginglist}" th:value="${packaging_dto.packaging_info_id}" th:text="${packaging_dto.packaging_type}"></option>
+						</select>
+					</div>
+				</div>
+				<div class="row form-group">
+					<div class="col col-md-3">
+						<label for="file-input" class=" form-control-label">Product Image</label><span class="text-danger">*</span>
+					</div>
+					<div class="col-12 col-md-9">
+						<input type="file" class="form-control-file" onchange="previewFile(this)" id="file" th:field="*{productimage}">	
+						<span class="help-block" id="product_image_name_msg"></span>
+						<label id="fileLabel">No file chosen(jpg/jpeg/png/bmp/gif)</label>
+					</div>
+				</div>
+	     	</div>
+	       	<div class="card-footer">
+	       		<div align="right">
+	  				<button type="submit" name="register" class="btn btn-info btn-sm" onmouseover="clearErrorMsg()" onclick="return checkValidate()"><i class="fa fa-dot-circle-o"></i>Add</button>
+	  			  	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	  			  	<button type="reset" class="btn btn-danger btn-sm" onmouseover="clearErrorMsg()"><i class="fa fa-ban"></i>Clear</button>
+	          	</div>
+	      	</div>
+	 	</form>
+	</div>
+	
+	    
+	        <form th:action="@{${T(pec.datacode.AdminPageInfo).PRODUCT_DELETE.url}}" method="get">
+			<!-- delete alert -->
+	      		<div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	      			<div class="modal-dialog">
+	      				<div class="modal-content">
+	      					<div class="modal-header">
+								Confirm Delete
+							</div>
+							<div class="modal-body">
+								Are you sure you want to delete?
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						        <input type="submit" class="btn btn-danger" value="Proceed">
+					      	</div>
+	      				</div>
+	      			</div>
+	      		</div>
+	      	<!-- end of delete -->
+	      		
+	      		
+			<div class="card">
+	         	<div class="card-header text-center">
+	         		<strong>Product</strong> Information
+	          	</div>
+	          	<div class="card-body card-block">
+					<table id="productInfo" class="table-responsive m-b-40 table table-borderless table-data3" th:action="@{${T(pec.datacode.AdminPageInfo).PRODUCT_LIST.url}}" th:object="${productInfoDto}">
+	                	<thead>
+							<tr>
+								<th scope="col"><input type="checkbox" name="masterCheck" id="masterCheck" value="checkUncheckAll"></th>
+	                           	<th>Product Code</th>
+	                            <th>Product Name</th>
+	                            <th>Description</th>
+	                            <th>Ingredient</th>
+	                            <th>Manufacture</th>
+	                            <th>Medicine Code</th>
+	                            <th>Category Name</th>
+	                            <th>Sell Price</th>
+	                            <th>Buy Price</th>
+	                            <th>Packaging Type</th>
+	                            <!-- <th>Image</th> -->
+	                            <th style="text-align:center">Action</th>
+	                    	</tr>
+	                 	</thead>
+	                    <tbody>
+							<tr th:each="dto:${productList}">
+								<td><input type="checkbox" name="row-check" id="row-check" th:value="${dto.product_info_id}"></td>
+								<td th:text="${dto.product_code}"></td>
+								<td th:text="${dto.product_name}"></td>
+								<td th:text="${dto.description}"></td>
+								<td th:text="${dto.ingredient}"></td>
+								<td th:text="${dto.manufacture}"></td>
+								<td th:text="${dto.medicine_code}"></td>
+								<td th:text="${dto.category_name}"></td>
+								<td th:text="${dto.sell_price}"></td>
+								<td th:text="${dto.buy_price}"></td>
+								<!-- <td th:text="${dto.product_image}"></td> -->
+								<td th:text="${dto.packaging_type}"></td>
+								<td>
+									<ul class="list-unstyled navbar__sub-list js-sub-list">
+                               			<li>
+                                   			<a th:href="@{${T(pec.datacode.AdminPageInfo).PRODUCT_UPDATE.url}+'/' + ${dto.product_info_id}}"><i style="text-decoration:underline;">Edit</i></a>
+                               			</li>
+                           			</ul>
+                           		</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>   
+				<div class="card-footer">
+					<div class="card-block float-right">
+						<input type="button" class="btn btn-danger" name="btnDelete" id="btnDelete" onclick="return deleteCheck()" value="Delete" />
+					</div>
+				</div>     
+	   		</div>
+	  		</form>
+</div>
+	<script type="text/javascript" layout:fragment="scriptArea">
+		/* document.getElementById('allselect').onclick = function() {
+		var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+			for (var checkbox of checkboxes) {
+				checkbox.checked = this.checked;
+			}
+		} */
+		
+		function previewFile(input) {	
+			var image="[[${E000128}]]";		
+		    var imgFile = document.getElementById('file');
+		    if(imgFile.value == "")
+		    	{
+		      	 	fileLabel.innerHTML = "No file chosen(jpg/jpeg/png/bmp/gif)";
+		      	}
+		    else
+		      	{
+		      		var theSplit = imgFile.value.split('\\');
+		      	   	fileLabel.innerHTML = theSplit[theSplit.length-1];
+		      	    var ext = input.value.split('.');
+		      		ext = ext[ext.length - 1].toLowerCase();
+		      		var arrayExtensions = [ 'jpg', 'jpeg', 'png', 'bmp', 'gif' ];
+		      		if (arrayExtensions.lastIndexOf(ext) == -1) {
+		      			document.getElementById("errorMsg").className = "alerterror";
+		      			document.getElementById("errorMsg").style.visibility = "visible";
+		      			document.getElementById("errorMsg").innerHTML = image;
+		      			document.getElementById("errorMsg").style.display = "block";
+		      			input.value = '';
+		      		}
+		     	}
+			}	 
+	          
+	        function clearErrorMsg(){	
+				var errorMsg = document.getElementById("errorMsg");
+				var successMsg = document.getElementById("successMsg");
+				if(errorMsg != null){
+					document.getElementById("errorMsg").style.visibility = "hidden";
+					document.getElementById("errorMsg").innerHTML = "";
+					document.getElementById("errorMsg").classList.remove("alerterror");
+				}
+				if(successMsg != null){
+					document.getElementById("successMsg").style.visibility = "hidden";
+					document.getElementById("successMsg").innerHTML = "";
+					document.getElementById("successMsg").classList.remove("alertsuccess");
+				}
+				document.getElementById("product_code").style.borderColor = "";
+				document.getElementById("productcode_msg").innerHTML = "";
+					
+				document.getElementById("product_name").style.borderColor = "";
+				document.getElementById("productname_msg").innerHTML = "";
+					
+				document.getElementById("description").style.borderColor = "";
+				document.getElementById("description_msg").innerHTML = "";
+					
+				document.getElementById("ingredient").style.borderColor = "";
+				document.getElementById("ingredient_msg").innerHTML = "";
+					
+				document.getElementById("manufacture").style.borderColor = "";
+				document.getElementById("manufacture_msg").innerHTML = "";
+					
+				document.getElementById("sell_price").style.borderColor = "";
+				document.getElementById("sellprice_msg").innerHTML = "";
+					
+				document.getElementById("buy_price").style.borderColor = "";
+				document.getElementById("buyprice_msg").innerHTML = "";
+				document.getElementById("product_image_name_msg").innerHTML = "";
+			}
+	          
+			function checkValidate(){	
+				var productcodeMsg="[[${E000027}]]";					
+				var productnameMsg="[[${E000028}]]";	
+				var descriptionMsg="[[${E000046}]]";
+				var ingredientMsg="[[${E000047}]]";
+				var manufactureMsg="[[${E000048}]]";
+				var sellpriceMsg="[[${E000126}]]";
+				var buypriceMsg="[[${E000127}]]";
+				var image="[[${E000128}]]";	
+		
+				var productCode = document.getElementById("product_code").value.trim();
+				var productName = document.getElementById("product_name").value.trim();
+				var description = document.getElementById("description").value.trim();
+				var ingredient = document.getElementById("ingredient").value.trim();
+				var manufacture = document.getElementById("manufacture").value.trim();
+				var sellprice = document.getElementById("sell_price").value.trim();
+				var buyprice = document.getElementById("buy_price").value.trim();
+				var imgFile = document.getElementById('file').value;
+				
+				if(productCode == ""){
+					document.getElementById("product_code").style.borderColor = "red";
+					document.getElementById("productcode_msg").innerHTML = productcodeMsg;
+					return false;
+				} else if(productName == ""){
+					document.getElementById("product_name").style.borderColor = "red";
+					document.getElementById("productname_msg").innerHTML = productnameMsg;
+				    return false;
+				} else if(description == ""){
+					document.getElementById("description").style.borderColor = "red";
+					document.getElementById("description_msg").innerHTML = descriptionMsg;
+				    return false;
+				} else if(ingredient == ""){
+					document.getElementById("ingredient").style.borderColor = "red";
+					document.getElementById("ingredient_msg").innerHTML = ingredientMsg;
+				    return false;
+				}else if(manufacture == ""){
+					document.getElementById("manufacture").style.borderColor = "red";
+					document.getElementById("manufacture_msg").innerHTML = manufactureMsg;
+				    return false;
+				}else if(sellprice == ""){
+					document.getElementById("sell_price").style.borderColor = "red";
+					document.getElementById("sellprice_msg").innerHTML = sellpriceMsg;
+				    return false;
+				}else if(buyprice == ""){
+					document.getElementById("buy_price").style.borderColor = "red";
+					document.getElementById("buyprice_msg").innerHTML = buypriceMsg;
+				    return false;
+				}else if(imgFile.length==0){	
+					document.getElementById("product_image_name_msg").innerHTML = image;
+					return false;
+				} else {
+					return true;
+				}	
+			}
+		
+		/*  $(document).ready(function() {
+			$('.active').removeClass('active');
+			$('#product_management').addClass('active');
+			$('#productInfo').DataTable({
+				"lengthMenu" : [ 3, 5, 7, 9, 10 ]
+			});	 
+		 });
+		
+		var datatbstatus= "[[${data_tb}]]";
+		if(datatbstatus=="save"){
+			$(document).ready(function(){
+				$('#productInfo').DataTable({
+					"lengthMenu" : [3, 5, 7, 9, 10],
+					stateSave: true
+				});
+			});
+		}else {
+			$(document).ready(function(){
+				$('#productInfo').DataTable({
+					"lengthMenu" : [3, 5, 7, 9, 10],
+					stateSave: true
+				}).search( '' )
+				.columns().search( '' )
+				draw();
+			});
+		}
+				
+		$(function() {
+			// Header Master Checkbox Event
+			$("#masterCheck").on("click",function() {
+				if ($("input:checkbox").prop("checked")) {
+					$("input:checkbox[name='row-check']").prop("checked", true);
+				} else {
+					$("input:checkbox[name='row-check']").prop("checked", false);
+				}
+			}); 
+			
+			// Check event on each table row checkbox
+			$("input:checkbox[name='row-check']").on("change",function() {
+				var total_check_boxes = $("input:checkbox[name='row-check']").length;
+				var total_checked_boxes = $("input:checkbox[name='row-check']:checked").length;
+				// If all checked manually then check master checkbox
+				if (total_check_boxes === total_checked_boxes) {
+					$("#masterCheck").prop("checked", true);
+				} else {
+					$("#masterCheck").prop("checked", false);
+				}
+			});
+		}); */ 
+			
+		function deleteCheck() {
+			document.getElementById("dis").style.display = "none";	
+			
+			var total_checked_boxes = $("input:checkbox[name='row-check']:checked").length;
+				
+			var hidden = $('#upload input[type="hidden"]').length;
+				
+			var total = total_checked_boxes + hidden;
+			console.log("hidden",hidden);
+				
+			if (total == 0) {
+				document.getElementById("deletecheck").style.display = "block";
+				$("#deletecheck").fadeIn(2);
+				document.body.scrollTop = 0;
+				document.documentElement.scrollTop = 0;
+				return false;
+			} else {
+				$('input[name="btnDelete"]').attr("data-toggle", "modal");
+				$('input[name="btnDelete"]').attr("data-target", "#confirm-submit"); 
+			}
+		}
+			
+			function closing() {
+				document.getElementById("deletecheck").style.display = "none";
+				return false;
+			}
+			
+			var datatbstatus= "[[${data_tb}]]";  
+			if(datatbstatus=="save"){
+				$(document).ready(function() {
+					var table=$('#productInfo').DataTable({
+						"lengthMenu" : [ 3, 5, 7, 9, 10 ],
+						stateSave: true
+					});
+				
+						$('.active').removeClass('active');
+						$('#product_management').addClass('active');
+						
+						$(function() {
+
+							$("#btnDelete").on(
+									"click",
+									function() {
+						      var form = this;
+
+						      // Iterate over all checkboxes in the table
+						      table.$('input[type="checkbox"]').each(function(){
+						    	  
+						         // If checkbox doesn't exist in DOM
+						         if(!$.contains(document, this)){
+						            // If checkbox is checked
+						            
+						            if(this.checked){
+						               // Create a hidden element 
+						               $(form).append(
+						                  $('<input>')
+						                     .attr('type', 'hidden')
+						                     .attr('name', this.name)
+						                     .attr('id','hid')
+						                     .val(this.value)
+						               );
+						            }
+						         } 
+						      });
+						    
+						      deleteCheck();
+						      
+						   });
+						});
+					var count=0;
+					$(function() {
+
+						// Header Master Checkbox Event
+						$("#masterCheck").on(
+								"click",
+								function() {
+									var form = this;
+									
+									if ($("input:checkbox").prop("checked")) {
+										
+										table.$('input[type="checkbox"]').each(function(){
+										$(this).prop('checked',true);
+										console.log(this);
+										});
+										
+									} else {
+										//$("input:checkbox[name='row-check']").prop("checked", false);
+										table.$('input[type="checkbox"]').each(function(){
+										$(this).prop('checked',false);
+										});
+									}
+								});
+
+						// Check event on each table row checkbox
+						
+						var form=this;
+						$(this)
+								.on(
+										"change",
+										function() {
+												
+											var allCount=0;
+											var checkCount=0;
+											table.$('input[type="checkbox"]').each(function(){
+												allCount++;
+												if(this.checked){
+													checkCount++;
+												}
+												});
+
+											console.log("allcount : ",allCount);
+											console.log("checkcount : ",checkCount);
+											// If all checked manually then check master checkbox
+											if (allCount == checkCount) {
+												$("#masterCheck").prop("checked", true);
+											} else {
+												$("#masterCheck").prop("checked", false);
+											}
+										});
+					});
+				
+				});			
+				
+				
+			} else {			
+				$(document).ready(function() {
+					var table=$('#productInfo').DataTable({
+						"lengthMenu" : [ 3, 5, 7, 9, 10 ],
+						stateSave: true
+					}).search( '' )
+			        .columns().search( '' )
+			        .draw();					
+				});	
+				
+					$('.active').removeClass('active');
+					$('#product_management').addClass('active');
+					
+					$(function() {
+
+						$("#btnDelete").on(
+								"click",
+								function() {
+					      var form = this;
+
+					      // Iterate over all checkboxes in the table
+					      table.$('input[type="checkbox"]').each(function(){
+					    	  
+					         // If checkbox doesn't exist in DOM
+					         if(!$.contains(document, this)){
+					            // If checkbox is checked
+					            
+					            if(this.checked){
+					               // Create a hidden element 
+					               $(form).append(
+					                  $('<input>')
+					                     .attr('type', 'hidden')
+					                     .attr('name', this.name)
+					                     .attr('id','hid')
+					                     .val(this.value)
+					               );
+					            }
+					         } 
+					      });
+					    
+					      deleteCheck();
+					      
+					   });
+					});
+				var count=0;
+				$(function() {
+
+					// Header Master Checkbox Event
+					$("#masterCheck").on(
+							"click",
+							function() {
+								var form = this;
+								
+								if ($("input:checkbox").prop("checked")) {
+									
+									table.$('input[type="checkbox"]').each(function(){
+									$(this).prop('checked',true);
+									console.log(this);
+									});
+									
+								} else {
+									//$("input:checkbox[name='row-check']").prop("checked", false);
+									table.$('input[type="checkbox"]').each(function(){
+									$(this).prop('checked',false);
+									});
+								}
+							});
+
+					// Check event on each table row checkbox
+					
+					var form=this;
+					$(this)
+							.on(
+									"change",
+									function() {
+											
+										var allCount=0;
+										var checkCount=0;
+										table.$('input[type="checkbox"]').each(function(){
+											allCount++;
+											if(this.checked){
+												checkCount++;
+											}
+											});
+
+										console.log("allcount : ",allCount);
+										console.log("checkcount : ",checkCount);
+										// If all checked manually then check master checkbox
+										if (allCount == checkCount) {
+											$("#masterCheck").prop("checked", true);
+										} else {
+											$("#masterCheck").prop("checked", false);
+										}
+									});
+				});
+			
+			}
+			
+	</script>
+</body>
+</html>

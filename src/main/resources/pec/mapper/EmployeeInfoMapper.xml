@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.EmployeeInfoMapper">
+	<select id="getEmployeeInfo" resultType="pec.dto.EmployeeInfoDto">
+		select e.employee_info_id,e.employee_code,e.employee_name,l.email_address,e.birth_date,e.gender,e.permit_order,e.phone_number,e.employee_address,e.employee_education,e.work_experience,e.remark,e.job_status,e.job_start_date,l.office_info_id,l.role,o.office_name from employee_info e, login_user_info l, office_info o where e.delete_flag=0 and e.login_user_info_id=l.login_user_info_id and o.office_info_id=l.office_info_id order by e.employee_info_id
+	</select>
+	<select id="getUpdate" resultType="pec.dto.EmployeeInfoDto">
+		select e.employee_info_id,e.employee_code,e.employee_name,l.email_address,e.birth_date,e.gender,e.permit_order,e.phone_number,e.employee_address,e.employee_education,e.work_experience,e.remark,e.job_status,e.job_start_date,l.office_info_id,l.role,o.office_name from employee_info e, login_user_info l, office_info o where e.employee_info_id=#{id} and e.login_user_info_id=l.login_user_info_id and o.office_info_id=l.office_info_id
+	</select>
+	<update id="employeeInfoDelete" parameterType="pec.dto.EmployeeInfoDto">
+		update employee_info set delete_flag=1 where employee_info_id= #{id}
+	</update>
+	<update id="employeeLoginDelete" parameterType="pec.dto.EmployeeInfoDto">
+		update login_user_info l set delete_flag=1 where l.login_user_info_id in (select e.login_user_info_id from employee_info e where e.employee_info_id = #{id} )
+	</update>
+	<select id="getDuplicate" resultType="pec.dto.EmployeeInfoDto">
+		select e.phone_number,l.email_address from employee_info e, login_user_info l where e.employee_info_id != #{id} and e.login_user_info_id = l.login_user_info_id and e.delete_flag=0
+	</select>
+	<update id="employeeInfoUpdate" parameterType="pec.dto.EmployeeInfoDto">
+		update employee_info set employee_name=#{employee_name}, birth_date=#{birth_date}, gender=#{gender}, permit_order=#{permit_order}, phone_number=#{phone_number}, employee_address=#{employee_address}, employee_education=#{employee_education}, work_experience=#{work_experience}, remark=#{remark}, job_status=#{job_status}, job_start_date=#{job_start_date}, update_user=#{update_user}, update_date=#{update_date} where employee_info_id=#{employee_info_id}
+	</update>
+	<update id="employeeLoginUpdate" parameterType = "pec.dto.EmployeeInfoDto">
+		update login_user_info l set l.office_info_id=#{office_info_id}, l.email_address = #{email_address}, l.update_user=#{update_user}, l.update_date=#{update_date}, l.role=#{role} where l.login_user_info_id in (select e.login_user_info_id from employee_info e where e.employee_info_id = #{employee_info_id})
+	</update>
+	<update id="employeePasswordUpdate" parameterType = "pec.dto.EmployeeInfoDto">
+		update login_user_info l set l.password = #{password} where l.login_user_info_id in (select e.login_user_info_id from employee_info e where e.employee_info_id = #{employee_info_id})
+	</update>
+	<select id="getDuplicateRegister" resultType="pec.dto.EmployeeInfoDto">
+		select e.employee_code,e.phone_number,l.email_address from employee_info e, login_user_info l where e.login_user_info_id = l.login_user_info_id and e.delete_flag=0
+	</select>
+	<insert id="employeeLoginRegister" parameterType="pec.dto.EmployeeInfoDto">
+		insert into login_user_info (email_address,password,role,office_info_id,delete_flag,insert_user,insert_date,update_user,update_date) values (#{email_address},#{password},#{role},#{office_info_id},#{delete_flag},#{insert_user},#{insert_date},#{update_user},#{update_date})
+	</insert>
+	<insert id="employeeInfoRegister" parameterType="pec.dto.EmployeeInfoDto">
+		insert into employee_info (employee_code,employee_name,birth_date,gender,permit_order,phone_number,employee_address,employee_education,work_experience,remark,job_status,delete_flag,insert_user,insert_date,update_user,update_date,login_user_info_id,job_start_date) values (#{employee_code},#{employee_name},#{birth_date},#{gender},#{permit_order},#{phone_number},#{employee_address},#{employee_education},#{work_experience},#{remark},#{job_status},#{delete_flag},#{insert_user},#{insert_date},#{update_user},#{update_date},#{login_user_info_id},#{job_start_date})
+	</insert>
+	<select id="getLoginUserInfoId" resultType="int" parameterType="pec.dto.EmployeeInfoDto">
+		select login_user_info_id from login_user_info where email_address=#{email_address} and role=#{role}
+	</select>
+	<select id="getOfficeName" resultType="String">
+		select office_name from office_info where delete_flag=0
+	</select>
+	<select id="getOfficeId" parameterType="String" resultType="int">
+		select office_info_id from office_info where office_name=#{office_name} and delete_flag=0
+	</select>
+</mapper>

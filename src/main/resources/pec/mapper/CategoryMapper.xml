@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.CategoryMapper">
+	<select id="getCategoryList" resultType="pec.dto.CategoryDto">
+		select * from category_info where delete_flag=0
+	</select>
+	
+	
+<insert id="addCategory" parameterType="pec.dto.CategoryDto">
+		insert into category_info(category_code, category_name,delete_flag,insert_user,insert_date,update_user,update_date)
+		values(#{category_code},#{category_name},0,#{insert_user},#{insert_date},#{update_user},#{update_date})
+	</insert>	
+	
+	<select id="getCategoryDto" parameterType="int" resultType="pec.dto.CategoryDto">
+ select category_info_id,category_code, category_name from category_info
+  where category_info_id=#{category_info_id}
+</select>
+	
+	<update id="updateCategory" parameterType="pec.dto.CategoryDto">
+				update category_info set                       
+                       category_name=#{category_name}, update_user=#{update_user}, update_date=#{update_date}
+                  where category_info_id=#{category_info_id}
+
+</update>
+<update id="deleteCategory" parameterType="pec.dto.CategoryDto">
+update category_info set delete_flag='1' where category_info_id= #{id} 
+
+</update>
+	
+	<!-- <select resultType="pec.dto.CategoryDto" id="getDuplicate">select category_code from categeory_info
+	where category_info_id != #{id}</select> -->
+	
+	<select id="getDuplicate" parameterType="pec.dto.CategoryDto" resultType="int">
+		select count(*) from category_info where category_code = #{category_code} and delete_flag=0
+	</select>
+	
+</mapper>

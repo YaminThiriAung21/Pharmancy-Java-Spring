@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Supplier Register</title>
+<style>
+.hidden {
+	display: none;
+}
+.modal-backdrop {
+  z-index: -1;
+}
+</style>
+</head>
+<body>
+<div class="col-lg-15" layout:fragment="content">
+
+		<div onmouseover="document.getElementById('errorMsg').style.display = 'none';"> 
+			<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}" class="sufee-alert alert with-close alert-danger alert-dismissible fade show"></p>
+		</div>
+		<div onmouseover="document.getElementById('successMsg').style.display = 'none';"> 
+			<p id="successMsg" th:if="${msg != null}" th:utext="${msg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show" onmouseover=""></p>
+		</div>
+		<div id="deletecheck" class="alert alert-danger hidden" data-alert="alert" style="top: 0">
+			<button class="float-right" onclick="return closing()">&times;</button>
+				<p id="focusing">
+					<strong>Please Check</strong> the check box you want to delete
+				</p>
+		</div>
+		<div class="col-lg-15">
+			<div class="card">
+	          <div class="card-header" align="center">
+	              <strong>Supplier </strong> Register
+	          </div>
+	          <form th:action="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_INSERT.url}}" method="post" th:object="${supplierDto}" class="form-horizontal">
+	          	<div class="card-body card-block">  
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                   	 
+	                        <label for="hf-suppliername" class=" form-control-label">Supplier Name<span style='color:red'>*</span></label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <input type="text" th:field="*{supplier_name}" placeholder="Enter Supplier Name..." class="form-control" maxlength="45" onchange="clearErrorMsg()">
+	                        <span class="help-block" id="sname_msg"></span>
+	                       
+	                    </div>
+	                </div>
+                
+	            
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label for="hf-suppliercode" class=" form-control-label">Supplier Code<span style='color:red'>*</span></label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <input type="text" th:field="*{supplier_code}" placeholder="Enter Supplier Code..." class="form-control" maxlength="45" onchange="clearErrorMsg()">
+	                        <span class="help-block" id="scode_msg"></span>
+	                        
+	                    </div>
+	                </div>
+                
+                
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label for="hf-suppliercity" class=" form-control-label">Supplier City<span style='color:red'>*</span></label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <input type="text" th:field="*{supplier_city}" placeholder="Enter Supplier City..." class="form-control" maxlength="45" onchange="clearErrorMsg()">
+	                        <span class="help-block" id="scity_msg"></span>
+	                    </div>
+	                </div>
+                
+                 
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label for="hf-supplieraddress" class=" form-control-label">Supplier Address<span style='color:red'>*</span></label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <textarea th:field="*{supplier_address}" placeholder="Enter Supplier Address..." class="form-control" maxlength="200" onchange="clearErrorMsg()"></textarea>
+	                        <span class="help-block" id="saddress_msg"></span>
+	                    </div>
+	                </div>
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label for="hf-supplieremail" class=" form-control-label">Supplier E-mail<span style='color:red'>*</span></label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+<!-- 	                        <input type="text" th:field="*{supplier_email_address}" placeholder="Enter Supplier Email..." class="form-control" pattern="/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/"> -->
+	                        <input type="text" th:field="*{supplier_email_address}" placeholder="Enter Supplier Email..." class="form-control" maxlength="45" onchange="clearErrorMsg()">
+	                        <span class="help-block" id="semail_msg"></span>
+	                    </div>
+	                </div>
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label for="hf-supplierphno" class=" form-control-label">Supplier Phone No<span style='color:red'>*</span></label>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <input type="text" th:field="*{supplier_phone_no}" placeholder="Enter Supplier Phone No..." class="form-control" maxlength="20" onchange="clearErrorMsg()">
+	                        <span class="help-block" id="sphoneno_msg"></span>
+	                    </div>
+	                </div>
+              </div>
+	               
+	                <div class="card-footer" align="right">
+		  			  
+		  			  <button type="submit" name="register" class="btn btn-info btn-sm" onmouseover="clearErrorMsg()" onclick="return checkValidate()"><i class="fa fa-dot-circle-o"></i> Register</button>
+		  			  <button type="reset" class="btn btn-danger btn-sm" onmouseover="clearErrorMsg()"><i class="fa fa-ban"></i> Clear</button>
+		  			   
+		          	</div>
+		          	
+		          	
+		          	
+		       	
+		          	
+		          	
+                </form>   
+                </div>   
+            <script type="text/javascript">	
+		 	
+			function clearErrorMsg(){	
+				
+				document.getElementById("supplier_name").style.borderColor = "";
+				document.getElementById("sname_msg").innerHTML = "";
+				
+				document.getElementById("supplier_code").style.borderColor = "";
+				document.getElementById("scode_msg").innerHTML = "";
+				
+				document.getElementById("supplier_city").style.borderColor = "";
+				document.getElementById("scity_msg").innerHTML = "";
+				
+				document.getElementById("supplier_address").style.borderColor = "";
+				document.getElementById("saddress_msg").innerHTML = "";
+				
+				document.getElementById("supplier_email_address").style.borderColor = "";
+				document.getElementById("semail_msg").innerHTML = "";
+				
+				document.getElementById("supplier_phone_no").style.borderColor = "";
+				document.getElementById("sphoneno_msg").innerHTML = "";
+				
+				var errorMsg = document.getElementById("errorMsg");
+				var successMsg = document.getElementById("successMsg");
+				if(errorMsg != null){
+					document.getElementById("errorMsg").style.visibility = "hidden";
+					document.getElementById("errorMsg").innerHTML = "";
+					document.getElementById("errorMsg").classList.remove("alerterror");
+				}
+				if(successMsg != null){
+					document.getElementById("successMsg").style.visibility = "hidden";
+					document.getElementById("successMsg").innerHTML = "";
+					document.getElementById("successMsg").classList.remove("alertsuccess");
+				}
+			}
+			function checkValidate(){	
+				var nameMsg="[[${E000026}]]";					
+				var codeMsg="[[${E000043}]]";
+				var cityMsg="[[${E000040}]]";
+				var addressMsg="[[${E000041}]]";
+				var emailMsg="[[${E000042}]]";
+				var phoneMsg="[[${E000129}]]";
+				
+				
+				var userName = document.getElementById("supplier_name").value.trim();
+				var code = document.getElementById("supplier_code").value.trim();
+				var city = document.getElementById("supplier_city").value.trim();
+				var address = document.getElementById("supplier_address").value.trim();
+				var email = document.getElementById("supplier_email_address").value.trim();
+				var phone = document.getElementById("supplier_phone_no").value.trim();
+				
+				if(userName == ""){
+					document.getElementById("supplier_name").style.borderColor = "red";
+					document.getElementById("sname_msg").innerHTML = nameMsg;
+					return false;
+				} else if(code == ""){
+					document.getElementById("supplier_code").style.borderColor = "red";
+					document.getElementById("scode_msg").innerHTML = codeMsg;
+					return false;
+				} else if(city == ""){
+					document.getElementById("supplier_city").style.borderColor = "red";
+					document.getElementById("scity_msg").innerHTML = cityMsg;
+					return false;
+				}else if(address == ""){
+					document.getElementById("supplier_address").style.borderColor = "red";
+					document.getElementById("saddress_msg").innerHTML = addressMsg;
+					return false;
+				}else if(email == ""){
+					document.getElementById("supplier_email_address").style.borderColor = "red";
+					document.getElementById("semail_msg").innerHTML = emailMsg;
+					return false;
+				}else if (validateEmail(email)==false) {
+					document.getElementById("supplier_email_address").style.borderColor = "red";
+					document.getElementById("semail_msg").innerHTML = "Email Format is Invalid";
+					return false;
+				}
+				else if(phone == ""){
+					document.getElementById("supplier_phone_no").style.borderColor = "red";
+					document.getElementById("sphoneno_msg").innerHTML = phoneMsg;
+					return false;
+				}else if(checkPhone(phone) == false){
+					document.getElementById("supplier_phone_no").style.borderColor = "red";
+					document.getElementById("sphoneno_msg").innerHTML = "Phone Format is Invalid";
+					return false;
+				}else {
+					return true;
+				}
+			}
+			function validateEmail(email) {
+				const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+				return re.test(email);
+			}
+			function checkPhone(phone){
+				var numbers = /^[0-9]+,?[0-9]+?$/; 
+				if(phone.match(numbers)){
+					return true;
+				}
+				else{
+					return false;	
+				}
+			}
+		</script>                
+                               
+</div>					
+      
+     		
+                           
+                              
+	                    		
+                        
+<!--                               <div class="table-responsive table--no-card m-b-30">    -->
+	 <form th:action="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_DELETE.url}}" method="get" >
+                               
+                                <!-- delete alert -->
+		<div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ 			<div class="modal-dialog">
+   				    <div class="modal-content">
+						 <div class="modal-header">
+								 Confirm Delete
+						 </div>
+							<div class="modal-body">
+								Are you sure you want to delete?
+							</div>
+						 <div class="modal-footer">
+								 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+								 <input type="submit" class="btn btn-danger" value="Proceed">
+						 </div>
+					</div>
+			 </div>
+		</div>
+								
+         <div class="card">
+	         <div class="card-header" align="center">
+	             <strong>Supplier </strong> List
+	         </div>
+                 
+	                    	<div class="table-responsive m-b-40 card-body card-block">	             
+                                    <table id="Slist" class="table-responsive m-b-40 table table-borderless table-data3" th:action="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_INSERT.url}}" th:object="${supplierDto}">
+                                        <thead>
+<!--                                         	class="table table-borderless table-striped table-earning" -->
+                                            <tr>
+                                            	<!-- <th><input type="checkbox" name="select" id="allselect"></th> -->
+                                            	<th scope="col"><input type="checkbox" name="masterCheck" id="masterCheck" value="checkUncheckAll"></th>
+                                                <th>No</th>
+                                                <th>Supplier Name</th>
+                                                <th>Supplier Code</th>
+                                                <th>Supplier City</th>
+                                                <th class="text-right">Supplier Address</th>
+                                                <th class="text-right">Supplier Email Address</th>
+                                                <th class="text-right">Supplier Phone No</th>
+                                                <th class="text-right" style="text-align:center">Actions</th> 
+                                            </tr>
+                                        </thead>
+                                       
+                                        <tbody>
+							 				<tr th:each="dto, ind: ${supplierList}" >
+							 					<td><input type="checkbox" name="row-check" id="row-check" th:value="${dto.supplier_info_id}"></td>
+							 					<td th:text="${ind.count}"></td>
+							 					<td th:text="${dto.supplier_name}"></td>
+							 					<td th:text="${dto.supplier_code}"></td>
+							 					<td th:text="${dto.supplier_city}"></td>
+							 					<td th:text="${dto.supplier_address}"></td>
+							 					<td th:text="${dto.supplier_email_address}"></td>
+							 					<td th:text="${dto.supplier_phone_no}"></td>
+							 					
+							 				    <td><a th:href="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_UPDATE.url}+ '/' + ${dto.supplier_info_id}}">Edit</a></td>
+							 					<!-- <td><a th:href="@{'/accountDelete/' + ${dto.id}}">Delete</a></td> -->
+							 				    
+                               					
+							 				    <!--  
+							 				    <td><a href="/accountUpdate">Update</a></td>
+							 				    <td><a href="/accountDelete">Delete</a>
+							 				    -->
+							 				</tr>
+							 			
+							 			</tbody>
+                                    </table>
+                                    
+                            </div>        
+                                    
+                                        
+                                 
+                               <div class="card-footer" align="right">
+				      					
+				      					 <input type="button" class="btn btn-danger btn-sm" name="delete" id="delete" onclick="return deleteCheck()" value="Delete" onmouseover="document.getElementById('successMsg').style.display = 'none';" /> 
+				      					<!-- <button type="submit" name="delete" class="btn btn-danger btn-sm" onclick="return deleteCheck()" >Delete</button> -->
+				      					
+				      			</div>
+                                   
+                                   
+        </div> 
+     </form>
+                                    
+                
+                            
+ </div>  
+									
+									
+	               
+                       
+ 		
+  
+  		
+		<script type="text/javascript" layout:fragment="scriptArea">
+		
+		
+            /* $(document).ready(function(){
+            	$('.active').removeClass('active');
+            	$('#supplierregister').addClass('active');
+                /* $('#Slist').DataTable({
+            		"lengthMenu" : [ 3, 5, 7, 9, 10 ]
+    			});  */ 
+    			
+            	var datatbstatus= "[[${data_tb}]]";  
+              	if(datatbstatus=="save"){
+              		$(document).ready(function() {
+              			var table=$('#Slist').DataTable({
+              				"lengthMenu" : [ 3, 5, 7, 9, 10 ],
+              	            stateSave: true
+              	        });
+              			
+              		
+              		
+              		$(function() {
+
+        				$("#delete").on("click",function() {
+        			      var form = this;
+
+        			      // Iterate over all checkboxes in the table
+        			      table.$('input[type="checkbox"]').each(function(){
+        			    	  
+        			         // If checkbox doesn't exist in DOM
+        			         if(!$.contains(document, this)){
+        			            // If checkbox is checked
+        			            
+        			            if(this.checked){
+        			               // Create a hidden element 
+        			               $(form).append(
+        			                  $('<input>')
+        			                     .attr('type', 'hidden')
+        			                     .attr('name', this.name)
+        			                     .attr('id','hid')
+        			                     .val(this.value)
+        			               );
+        			            }
+        			         } 
+        			      });
+        			    
+        			      deleteCheck();
+        			      
+        			   });
+        			});
+                   
+
+        					var count=0;
+        					$(function() {
+
+        					// Header Master Checkbox Event
+        					$("#masterCheck").on("click",
+        							function() {
+        								var form = this;
+        								
+        								if ($("input:checkbox").prop("checked")) {
+        									
+        									table.$('input[type="checkbox"]').each(function(){
+        									$(this).prop('checked',true);
+        									console.log(this);
+        									});
+        									
+        								} else {
+        									//$("input:checkbox[name='row-check']").prop("checked", false);
+        									table.$('input[type="checkbox"]').each(function(){
+        									$(this).prop('checked',false);
+        									});
+        								}
+        							});
+        				
+        					// Check event on each table row checkbox
+        					
+        					var form=this;
+        					$(this).on("change",function() {
+        											
+        										var allCount=0;
+        										var checkCount=0;
+        										table.$('input[type="checkbox"]').each(function(){
+        											allCount++;
+        											if(this.checked){
+        												checkCount++;
+        											}
+        											});
+        				
+        										console.log("allcount : ",allCount);
+        										console.log("checkcount : ",checkCount);
+        										// If all checked manually then check master checkbox
+        										if (allCount == checkCount) {
+        											$("#masterCheck").prop("checked", true);
+        										} else {
+        											$("#masterCheck").prop("checked", false);
+        										}
+        									});
+        						});
+              		});	
+              	} else {			
+              		$(document).ready(function() {
+              			var table=$('#Slist').DataTable({
+              				"lengthMenu" : [ 3, 5, 7, 9, 10 ],
+              	            stateSave: true
+              	        }).search( '' )
+              	        .columns().search( '' )
+              	        .draw();					
+              		});	
+              		$(function() {
+
+        				$("#delete").on("click",function() {
+        			      var form = this;
+
+        			      // Iterate over all checkboxes in the table
+        			      table.$('input[type="checkbox"]').each(function(){
+        			    	  
+        			         // If checkbox doesn't exist in DOM
+        			         if(!$.contains(document, this)){
+        			            // If checkbox is checked
+        			            
+        			            if(this.checked){
+        			               // Create a hidden element 
+        			               $(form).append(
+        			                  $('<input>')
+        			                     .attr('type', 'hidden')
+        			                     .attr('name', this.name)
+        			                     .attr('id','hid')
+        			                     .val(this.value)
+        			               );
+        			            }
+        			         } 
+        			      });
+        			    
+        			      deleteCheck();
+        			      
+        			   });
+        			});
+                   
+
+        					var count=0;
+        					$(function() {
+
+        					// Header Master Checkbox Event
+        					$("#masterCheck").on("click",
+        							function() {
+        								var form = this;
+        								
+        								if ($("input:checkbox").prop("checked")) {
+        									
+        									table.$('input[type="checkbox"]').each(function(){
+        									$(this).prop('checked',true);
+        									console.log(this);
+        									});
+        									
+        								} else {
+        									//$("input:checkbox[name='row-check']").prop("checked", false);
+        									table.$('input[type="checkbox"]').each(function(){
+        									$(this).prop('checked',false);
+        									});
+        								}
+        							});
+        				
+        					// Check event on each table row checkbox
+        					
+        					var form=this;
+        					$(this).on("change",function() {
+        											
+        										var allCount=0;
+        										var checkCount=0;
+        										table.$('input[type="checkbox"]').each(function(){
+        											allCount++;
+        											if(this.checked){
+        												checkCount++;
+        											}
+        											});
+        				
+        										console.log("allcount : ",allCount);
+        										console.log("checkcount : ",checkCount);
+        										// If all checked manually then check master checkbox
+        										if (allCount == checkCount) {
+        											$("#masterCheck").prop("checked", true);
+        										} else {
+        											$("#masterCheck").prop("checked", false);
+        										}
+        									});
+        						});
+        				}
+            	
+            	
+            
+          	
+           
+            /* document.getElementById('masterCheck').onclick = function() { 
+      	    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+           	for (var checkbox of checkboxes) {
+           		checkbox.checked = this.checked; 
+           		}
+           	}  */
+            
+            
+            function deleteCheck() {
+    			var total_checked_boxes = $("input:checkbox[name='row-check']:checked").length;
+    			var hidden = $('#upload input[type="hidden"]').length;
+    			
+    			var total = total_checked_boxes + hidden;
+    			console.log("hidden",hidden);
+    			
+    			if (total == 0) {
+    				document.getElementById("deletecheck").style.display = "block";
+    				$("#deletecheck").fadeIn(2);
+    				document.body.scrollTop = 0;
+    				document.documentElement.scrollTop = 0;
+    				return false;
+    			} else {
+    				//alert("hi");
+    			    $('input[id="delete"]').attr("data-toggle", "modal");
+    				$('input[id="delete"]').attr("data-target", "#confirm-submit"); 
+    				
+    			}
+    		}
+			
+    		function closing() {
+    			document.getElementById("deletecheck").style.display = "none";
+    			return false;
+    		}
+    		
+    		
+		</script>   
+  
+									
+									
+	                           	                            
+</body>
+</html>

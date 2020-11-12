@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.MedicineInfoMapper">
+	<select id="getMedicineInfoList" resultType="pec.dto.MedicineInfoDto">
+		select * from medicine_info where delete_flag=0
+	</select>
+	
+	
+	<insert id="addMedicine" parameterType="pec.dto.MedicineInfoDto">
+		insert into medicine_info(medicine_code, medicine_type,delete_flag,insert_user,insert_date,update_user,update_date)
+		values(#{medicine_code},#{medicine_type},0,#{insert_user},#{insert_date},#{update_user},#{update_date})
+	</insert>	
+	
+	<select id="getMedicineInfoDto" parameterType="int" resultType="pec.dto.MedicineInfoDto">
+ select medicine_info_id,medicine_code, medicine_type from medicine_info
+  where medicine_info_id=#{medicine_info_id}
+</select>
+	
+	<update id="updateMedicine" parameterType="pec.dto.MedicineInfoDto">
+				update medicine_info set                  
+                      medicine_type=#{medicine_type}, update_user=#{update_user}, update_date=#{update_date}		
+                  where medicine_info_id=#{medicine_info_id}
+
+</update>
+<update id="deleteMedicine" parameterType="pec.dto.MedicineInfoDto">
+update medicine_info set delete_flag=1 where medicine_info_id= #{id} 
+
+</update>
+	
+	
+	<select id="getDuplicate" parameterType="pec.dto.MedicineInfoDto" resultType="int">
+		select count(*) from medicine_info where medicine_code = #{medicine_code} and delete_flag=0
+	</select>
+	
+</mapper>

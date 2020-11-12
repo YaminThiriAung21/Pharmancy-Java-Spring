@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>User Mobile Menu</title>
+</head>
+<body>
+	<div class="site-mobile-menu" th:fragment="mobileMenu">
+		<div class="site-mobile-menu-header">
+			<div class="site-mobile-menu-logo"><a href="index.html" class="js-logo-clone">
+				<strong class="text-primary">Pharma</strong>tive</a>
+			</div>
+			<div class="site-mobile-menu-close ">
+				<span class="ion-ios-close js-menu-toggle"></span>
+			</div>
+		</div>
+		<div class="site-mobile-menu-body">
+			<ul class="site-nav-wrap">
+				<li><a th:href="@{'/pharmacyHome'}">Home</a></li>
+				<li><a href="contact.html">Product</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="site-mobile-menu" th:fragment="authMobileMenu">
+		<div class="site-mobile-menu-header">
+			<div class="site-mobile-menu-logo"><a href="index.html" class="js-logo-clone">
+				<strong class="text-primary">Pharma</strong>tive</a>
+			</div>
+			<div class="site-mobile-menu-close ">
+				<span class="ion-ios-close js-menu-toggle"></span>
+			</div>
+		</div>
+		<div class="site-mobile-menu-body">
+			<ul class="site-nav-wrap">
+				<li><a th:href="@{'/pharmacyHome'}">Home</a></li>
+				<li class="active"><a href="shop.html">Store</a></li>
+				<li class="has-children">
+					<span class="arrow-collapse collapsed" data-toggle="collapse" data-target="#collapseItem0"></span>
+				  	<a href="#">Products</a>
+					<ul class="collapse" id="collapseItem0">
+					  <li><a href="#">Supplements</a></li>
+					  <li class="has-children"><span class="arrow-collapse collapsed" data-toggle="collapse" data-target="#collapseItem1"></span>
+					    <a href="#">Vitamins</a>
+					    <ul class="collapse" id="collapseItem1">
+					      <li><a href="#">Supplements</a></li>
+					      <li><a href="#">Vitamins</a></li>
+					      <li><a href="#">Diet &amp; Nutrition</a></li>
+					      <li><a href="#">Tea &amp; Coffee</a></li>
+					    </ul>
+					  </li>
+					  <li><a href="#">Diet &amp; Nutrition</a></li>
+					  <li><a href="#">Tea &amp; Coffee</a></li>
+					</ul>
+				</li>
+				<li><a href="about.html">About</a></li>
+				<li><a href="contact.html">Contact</a></li>
+			</ul>
+		</div>
+	</div>
+</body>
+</html>

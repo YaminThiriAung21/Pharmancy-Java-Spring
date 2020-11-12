@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout" layout:decorator="common/admin_layout">
+<head>
+<meta charset="ISO-8859-1">
+<title>Category</title>
+<style>
+.hidden {
+display: none;
+}
+.modal-backdrop{
+z-index:-1;
+}
+</style>
+</head>
+<body>
+<div  class="col-lg-12" layout:fragment="content">
+		<p id="errorMsg" th:if="${errormsg != null}" th:text="${errormsg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+		<p id="successMsg" th:if="${msg != null}" th:utext="${msg}" class="sufee-alert alert with-close alert-success alert-dismissible fade show"></p>
+		<div id="deletecheck" class="alert alert-danger hidden"
+		data-alert="alert" style="top: 0">
+		<button class="float-right" onclick="return closing()">&times;</button>
+		<p id="focusing">
+		<strong>Please Check</strong> the check box you want to delete
+		</p>
+		</div>
+		
+			<div class="card">
+	          <div class="card-header" align="center">
+	              <strong>Category Update</strong>
+	          </div>
+	          <form th:action="@{${T(pec.datacode.AdminPageInfo).CATEGORY_UPDATE.url}}" method="post" th:object="${categoryDto}" class="form-horizontal">
+	          	<div class="card-body card-block">  
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                     <input type="hidden" th:field="*{category_info_id}">
+	                        <label for="hf-code" class=" form-control-label">Category Code</label>
+	                        
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <input type="text" th:field="*{category_code}"  class="form-control" disabled/>
+	                        <span class="help-block" id="code_msg"></span>
+	                        
+	                    </div>
+	                </div>
+	                <div class="row form-group">
+	                    <div class="col col-md-3">
+	                        <label for="hf-name" class=" form-control-label">Category Name</label>
+	                         <span class="text-danger">*</span>
+	                    </div>
+	                    <div class="col-12 col-md-9">
+	                        <input type="text" th:field="*{category_name}"  class="form-control" maxlength="25">
+	                        <span class="help-block" id="name_msg"></span>
+	                       
+	                    </div>
+	                </div>        
+	          </div>
+	          <div class="card-footer" align="right">
+	  			  <button type="submit" name="update" class="btn btn-info btn-sm" onmouseover="clearErrorMsg()" onclick="return checkValidate()"><i class="fa fa-dot-circle-o"></i>Update</button>
+	  			   <button type="reset" name="cancel" class="btn btn-danger btn-sm" onmouseover="clearErrorMsg()" th:onclick="|window.location.href='@{${T(pec.datacode.AdminPageInfo).CATEGORY_INSERT.url}}'|"><i class="fa fa-ban"></i>Cancel</button>
+	          </div>
+	          </form>
+			</div>
+			 <script type="text/javascript">	
+
+			function clearErrorMsg(){	
+				var errorMsg = document.getElementById("errorMsg");
+				var successMsg = document.getElementById("successMsg");
+				if(errorMsg != null){
+					document.getElementById("errorMsg").style.visibility = "hidden";
+					document.getElementById("errorMsg").innerHTML = "";
+					document.getElementById("errorMsg").classList.remove("alerterror");
+				}
+				if(successMsg != null){
+					document.getElementById("successMsg").style.visibility = "hidden";
+					document.getElementById("successMsg").innerHTML = "";
+					document.getElementById("successMsg").classList.remove("alertsuccess");
+				}
+			}
+			function checkValidate(){	
+				var codeMsg="[[${E000136}]]";					
+				var nameMsg="[[${E000137}]]";											
+				var categoryCode = document.getElementById("category_code").value.trim();
+				var categoryName = document.getElementById("category_name").value.trim();
+				if(categoryCode == ""){
+					document.getElementById("category_code").style.borderColor = "red";
+					document.getElementById("code_msg").innerHTML = codeMsg;
+					return false;
+				} else if(categoryName == ""){
+					document.getElementById("category_name").style.borderColor = "red";
+					document.getElementById("name_msg").innerHTML =nameMsg;
+				    return false;
+				} else {
+					return true;
+				}	
+			}
+		</script>
+		<form th:action="@{${T(pec.datacode.AdminPageInfo).CATEGORY_DELETE.url}}" method="get">
+			<!-- delete alert -->
+		<div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+			<div class="modal-content">
+			<div class="modal-header">
+			Confirm Delete
+			</div>
+			<div class="modal-body">
+			Are you sure you want to delete?
+			</div>
+			<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			<input type="submit" class="btn btn-danger" value="Proceed">
+			</div>
+			</div>
+			</div>
+		</div>
+		<!-- end of delete-->	
+			 <div class="card">
+	          <div class="card-header" align="center">
+	              <strong>Category List</strong>
+	          </div>
+	                    	<div class="card-body card-block">
+	                    	<div class="table-responsive m-b-40">
+	                        	<table id="categoryList" class="table table-borderless table-data3" th:action="@{${T(pec.datacode.AdminPageInfo).CATEGORY_INSERT.url}}" th:object="${categoryDto}">
+	                            	<thead>
+										<tr>
+	                                    	 <th scope="col"><input type="checkbox" name="masterCheck" id="masterCheck" value="checkUncheckAll"></th>
+	                                        <th>Category Code</th>
+	                                        <th>Category Name</th>
+	                                        <th>Action</th>
+	                                     </tr>
+	                                 </thead>
+	                                 <tbody>
+										<tr th:each="dto: ${categoryList}">
+											<td> <input type="checkbox" name="row-check" id="row-check" th:value="${dto.category_info_id}">  </td>
+											<td th:text="${dto.category_code}"> </td>
+											<td th:text="${dto.category_name}"> </td>
+											<td><ul class="list-unstyled navbar__sub-list js-sub-list"> <li>
+								<a th:href="@{${T(pec.datacode.AdminPageInfo).CATEGORY_UPDATE.url}+'/' + ${dto.category_info_id}}">
+                               <i style="text-decoration:underline;">Edit</i> </a>
+                               </li>
+                               </ul>
+                                </td>
+                               
+											
+										</tr>
+										
+									</tbody>
+								</table>
+			</div>
+			            </div>
+		    </div>        
+	 
+	          	<div align="right">
+	  			  
+	  			  <input type="button" name="delete" class="btn btn-danger" onclick="return deleteCheck()" value="Delete" />
+	        	</div>
+	        	</form>
+			  </div>
+     	
+			
+			 <script type="text/javascript" layout:fragment="scriptArea">  
+	/* const checkbox = document.getElementById('allselect')
+
+	 checkbox.addEventListener('change', (event) => {
+	   if (event.target.checked) {
+	     checkboxes = document.getElementsByName('select');
+	     for (var i = 0, n = checkboxes.length; i < n; i++) {
+	     checkboxes[i].checked = event.target.checked;
+	     }
+	   } else {
+	     checkboxes = document.getElementsByName('select');
+	     for (var i = 0, n = checkboxes.length; i < n; i++) {
+	     checkboxes[i].checked = event.target.checked;
+	     }
+	   }
+	 })
+			
+			
+			
+			$(document).ready(function() {
+
+			$('.active').removeClass('active');
+			$('#category_info_register').addClass('active');
+		//	$('#categoryList').DataTable({
+			//"lengthMenu" : [ 3, 5, 7, 9, 10 ]
+			//});
+
+			});
+	 
+	 var datatbstatus= "[[${data_tb}]]";
+	 if(datatbstatus=="save"){
+	 $(document).ready(function() {
+	 $('#categoryList').DataTable({
+		 "lengthMenu" : [ 3, 5, 7, 9, 10 ],
+	 stateSave: true
+	 });
+
+	 });
+	 } else {
+	 $(document).ready(function() {
+	 $('#categoryList').DataTable({
+		 "lengthMenu" : [ 3, 5, 7, 9, 10 ],
+	 stateSave: true
+	 }).search( '' )
+	 .columns().search( '' )
+	 .draw();
+	 });
+	 }*/
+
+			
+
+			function deleteCheck() {
+			var total_checked_boxes = $("input:checkbox[name='row-check']:checked").length;
+			
+
+			var hidden = $('#upload input[type="hidden"]').length;
+			
+			var total = total_checked_boxes + hidden;
+			console.log("hidden",hidden);
+			if (total== 0) {
+			document.getElementById("deletecheck").style.display = "block";
+			$("#deletecheck").fadeIn(2);
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+			return false;
+			} else {
+			$('input[name="delete"]').attr("data-toggle", "modal");
+			$('input[name="delete"]').attr("data-target", "#confirm-submit");
+			}
+			}
+
+			function closing() {
+			document.getElementById("deletecheck").style.display = "none";
+			return false;
+			}
+
+				
+			var datatbstatus= "[[${data_tb}]]";  
+			if(datatbstatus=="save"){
+				$(document).ready(function() {
+					var table=$('#categoryList').DataTable({
+						"lengthMenu" : [ 3, 5, 7, 9, 10 ],
+						stateSave: true
+					});
+				
+						$('.active').removeClass('active');
+						$('#category_info_register').addClass('active');
+						
+						$(function() {
+
+							$("#delete").on(
+									"click",
+									function() {
+						      var form = this;
+
+						      // Iterate over all checkboxes in the table
+						      table.$('input[type="checkbox"]').each(function(){
+						    	  
+						         // If checkbox doesn't exist in DOM
+						         if(!$.contains(document, this)){
+						            // If checkbox is checked
+						            
+						            if(this.checked){
+						               // Create a hidden element 
+						               $(form).append(
+						                  $('<input>')
+						                     .attr('type', 'hidden')
+						                     .attr('name', this.name)
+						                     .attr('id','hid')
+						                     .val(this.value)
+						               );
+						            }
+						         } 
+						      });
+						    
+						      deleteCheck();
+						      
+						   });
+						});
+					var count=0;
+					$(function() {
+
+						// Header Master Checkbox Event
+						$("#masterCheck").on(
+								"click",
+								function() {
+									var form = this;
+									
+									if ($("input:checkbox").prop("checked")) {
+										
+										table.$('input[type="checkbox"]').each(function(){
+										$(this).prop('checked',true);
+										console.log(this);
+										});
+										
+									} else {
+										//$("input:checkbox[name='row-check']").prop("checked", false);
+										table.$('input[type="checkbox"]').each(function(){
+										$(this).prop('checked',false);
+										});
+									}
+								});
+
+						// Check event on each table row checkbox
+						
+						var form=this;
+						$(this)
+								.on(
+										"change",
+										function() {
+												
+											var allCount=0;
+											var checkCount=0;
+											table.$('input[type="checkbox"]').each(function(){
+												allCount++;
+												if(this.checked){
+													checkCount++;
+												}
+												});
+
+											console.log("allcount : ",allCount);
+											console.log("checkcount : ",checkCount);
+											// If all checked manually then check master checkbox
+											if (allCount == checkCount) {
+												$("#masterCheck").prop("checked", true);
+											} else {
+												$("#masterCheck").prop("checked", false);
+											}
+										});
+					});
+				
+				});			
+				
+				
+			} else {			
+				$(document).ready(function() {
+					var table=$('#categoryList').DataTable({
+						"lengthMenu" : [ 3, 5, 7, 9, 10 ],
+						stateSave: true
+					}).search( '' )
+			        .columns().search( '' )
+			        .draw();					
+				});	
+				
+					$('.active').removeClass('active');
+					$('#category_info_register').addClass('active');
+					
+					$(function() {
+
+						$("#delete").on(
+								"click",
+								function() {
+					      var form = this;
+
+					      // Iterate over all checkboxes in the table
+					      table.$('input[type="checkbox"]').each(function(){
+					    	  
+					         // If checkbox doesn't exist in DOM
+					         if(!$.contains(document, this)){
+					            // If checkbox is checked
+					            
+					            if(this.checked){
+					               // Create a hidden element 
+					               $(form).append(
+					                  $('<input>')
+					                     .attr('type', 'hidden')
+					                     .attr('name', this.name)
+					                     .attr('id','hid')
+					                     .val(this.value)
+					               );
+					            }
+					         } 
+					      });
+					    
+					      deleteCheck();
+					      
+					   });
+					});
+				var count=0;
+				$(function() {
+
+					// Header Master Checkbox Event
+					$("#masterCheck").on(
+							"click",
+							function() {
+								var form = this;
+								
+								if ($("input:checkbox").prop("checked")) {
+									
+									table.$('input[type="checkbox"]').each(function(){
+									$(this).prop('checked',true);
+									console.log(this);
+									});
+									
+								} else {
+									//$("input:checkbox[name='row-check']").prop("checked", false);
+									table.$('input[type="checkbox"]').each(function(){
+									$(this).prop('checked',false);
+									});
+								}
+							});
+
+					// Check event on each table row checkbox
+					
+					var form=this;
+					$(this)
+							.on(
+									"change",
+									function() {
+											
+										var allCount=0;
+										var checkCount=0;
+										table.$('input[type="checkbox"]').each(function(){
+											allCount++;
+											if(this.checked){
+												checkCount++;
+											}
+											});
+
+										console.log("allcount : ",allCount);
+										console.log("checkcount : ",checkCount);
+										// If all checked manually then check master checkbox
+										if (allCount == checkCount) {
+											$("#masterCheck").prop("checked", true);
+										} else {
+											$("#masterCheck").prop("checked", false);
+										}
+									});
+				});
+			
+			}
+			
+			
+			
+			
+			
+			
+ </script>	
+ 
+					
+</body>
+</html>

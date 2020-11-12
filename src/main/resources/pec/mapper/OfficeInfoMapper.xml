@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pec.mapper.OfficeInfoMapper">
+	<select id="getOfficeInfo" resultType="pec.dto.OfficeDto">
+		select office_info_id,office_code,office_name,office_email_address,office_city,office_phone_number,office_address,office_image_name from office_info where delete_flag=0
+	</select>
+	<select id="getUpdate" resultType="pec.dto.OfficeDto">
+		select office_info_id,office_code,office_name,office_email_address,office_city,office_phone_number,office_address,office_image_name from office_info where office_info_id = #{office_info_id}
+	</select>
+	<update id="update" parameterType="pec.dto.OfficeDto">
+		update office_info set office_name=#{office_name},office_email_address=#{office_email_address},office_city=#{office_city},office_phone_number=#{office_phone_number},office_address=#{office_address},office_image=#{office_image},office_image_name=#{office_image_name}, update_user=#{update_user}, update_date=#{update_date} where office_info_id=#{office_info_id}
+	</update>
+	<update id="OfficeUpdateWithNoImage" parameterType="pec.dto.OfficeDto">
+		update office_info set office_name=#{office_name},office_email_address=#{office_email_address},office_city=#{office_city},office_phone_number=#{office_phone_number},office_address=#{office_address} where office_info_id=#{office_info_id}
+	</update>
+	<update id="delete" parameterType="pec.dto.OfficeDto">
+		update office_info set delete_flag=1 where office_info_id=#{id}
+	</update>
+	<insert id="register" parameterType="pec.dto.OfficeDto">
+		insert into office_info(
+		office_code,office_name,office_email_address,office_city,office_phone_number,office_address,
+		delete_flag,insert_user,insert_date,update_user,update_date,office_image,office_image_name) 
+		values	(
+		#{office_code},#{office_name},#{office_email_address},#{office_city},#{office_phone_number},#{office_address},
+		#{delete_flag},#{insert_user},#{insert_date},#{update_user},#{update_date},#{office_image},#{office_image_name})
+	</insert>
+	<select id="getDuplicate" resultType="pec.dto.OfficeDto">
+		select office_email_address from office_info where delete_flag=0 and office_info_id!=#{id}
+	</select>
+	<select id="getDuplicatedCode" resultType="pec.dto.OfficeDto">
+		select office_code from office_info where delete_flag=0 and office_info_id!=#{id}
+	</select>
+</mapper>

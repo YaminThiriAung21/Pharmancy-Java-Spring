@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+<title>Menu Sidebar</title>
+</head>
+<body>
+	<div th:fragment="adminMenuSidebar">
+	<aside class="menu-sidebar d-none d-lg-block">
+           <div class="logo">
+               <a href="#">
+                   <img src="/images/icon/gic_mm.png" alt="GIC Admin" width="160" style="margin-top:35px;" height="40">
+               </a>
+           </div>
+           <div class="menu-sidebar__content js-scrollbar1">
+               <nav class="navbar-sidebar">
+                   <ul class="list-unstyled navbar__list">
+                   		
+                       <li id="office_management" th:if="${session.EmployeeInfoDto.role == 'SYSTEM ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).OFFICE_INFO.url}+'?top'}">
+                               <i class="fas fa-building" aria-hidden="true"></i>Office Info List</a>
+                       </li>
+                       <li id="office_register" th:if="${session.EmployeeInfoDto.role == 'SYSTEM ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).OFFICE_INFO_REGISTER.url}+'?top'}">
+                               <i class="fas fa-building" aria-hidden="true"></i>Office Register</a>
+                       </li>
+                       <li id="employee_info" th:if="${session.EmployeeInfoDto.role == 'SYSTEM ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).EMPLOYEE_INFO.url}+'?top'}">
+                               <i class="fa fa-group"></i>Employee Info List</a>
+                       </li>
+                       <li id="employee_info_register" th:if="${session.EmployeeInfoDto.role == 'SYSTEM ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).EMPLOYEE_INFO_REGISTER.url}+'?top'}">
+                               <i class="fa fa-group"></i>Employee Register</a>
+                       </li>
+                       
+                       <li id="customer-list" th:if="${session.EmployeeInfoDto.role == 'SYSTEM ADMIN'}">
+                       		<a th:href="@{${T(pec.datacode.AdminPageInfo).CUSTOMER_LIST.url}+'?top'}">
+								<i class="fas fa-users"></i>Customer Lists
+							</a>
+						</li>
+						
+						<li id="customer_order_history" th:if="${session.EmployeeInfoDto.role == 'SYSTEM ADMIN'}">
+						<a th:href="@{${T(pec.datacode.AdminPageInfo).CUSTOMER_ORDER_HISTORY.url}+'?top'}">
+						<i class="fa fa-history" aria-hidden="true"></i>Customer Order History</a>
+						</li>
+                       
+                       <li id="category_info_register" th:if="${session.EmployeeInfoDto.role == 'ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).CATEGORY_INSERT.url}+'?top'}">
+                               <i class="fas fa-list-alt"></i>Category Management</a>
+                       </li>
+                      
+                       <li id="medicine_info_register" th:if="${session.EmployeeInfoDto.role == 'ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).MEDICINE_ADD.url}+'?top'}">
+                               <i class="fas fa-chart-bar"></i>Medicine Management</a>
+                       </li>
+                       <li id="supplierregister" class="active has-sub" th:if="${session.EmployeeInfoDto.role == 'ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_INSERT.url}+'?top'}">
+                               <i class="fa fa-users" aria-hidden="true"></i>Supplier Management</a>
+                       </li>
+                       <li id="product_management" th:if="${session.EmployeeInfoDto.role == 'ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).PRODUCT_INSERT.url}+'?top'}">
+                               <i class="fas fa-suitcase"></i>Product Management</a>
+                       </li>
+                       <li id="product_loc_reg" th:if="${session.EmployeeInfoDto.role == 'ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).PRODUCT_LOCATION_INSERT.url}+'?top'}">
+                               <i class="fas fa-chart-bar"></i>Product Location Register</a>
+                       </li>
+                       <li id="product_loc_list" th:if="${session.EmployeeInfoDto.role == 'ADMIN'}">
+                           <a th:href="@{${T(pec.datacode.AdminPageInfo).PRODUCT_LOCATION_INSERT_LIST.url}+'?top'}">
+                               <i class="fas fa-chart-bar"></i>Product Location List</a>
+                       </li>
+                       <li id="supplier_order_reg" th:if="${session.EmployeeInfoDto.role == 'ADMIN'}">
+                       		<a class="js-arrow" th:href="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_ORDER_REGISTRATION.url}+'?top'}">
+                       		<i class="fas fa-shopping-cart" aria-hidden="true"></i>Supplier Order Registration</a>
+                       </li>
+                       <li id="supplier_order_list" th:if="${session.EmployeeInfoDto.role == 'ADMIN'}">
+                       	<a class="js-arrow" th:href="@{${T(pec.datacode.AdminPageInfo).SUPPLIER_ORDER_LIST.url}+'?top'}">
+                       		<i class="fas fa-list-alt" aria-hidden="true"></i>Supplier Order Info List</a>
+                       </li>
+                   </ul>
+               </nav>
+           </div>
+       </aside>
+	</div>
+</body>
+</html>

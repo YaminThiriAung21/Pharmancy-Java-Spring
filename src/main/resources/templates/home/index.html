@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+
+<head>
+  <title>Pharmacy E Commerce System</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <script src="../js/jquery-3.3.1.min.js"></script>
+  <script src="../js/jquery-ui.js"></script>
+  <script src="../js/popper.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/owl.carousel.min.js"></script>
+  <script src="../js/jquery.magnific-popup.min.js"></script>
+  
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../fonts/icomoon/style.css">
+  <link rel="stylesheet" href="../fonts/flaticon/font/flaticon.css">
+  <link rel="stylesheet" href="../css/jquery-ui.css">
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/owl.carousel.min.css">
+  <link rel="stylesheet" href="../css/magnific-popup.css">
+  <link rel="stylesheet" href="../css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="../css/aos.css">
+  <link rel="stylesheet" href="../css/style.css">
+  
+  <style>
+  	/*.cont{
+  		width:720px;
+	}*/
+	.searchButton {
+  		background-color: #75B239;
+  		border: none;
+  		border-radius: 10px; 
+  		padding: 10px;
+  		text-align: center;
+  		text-decoration: none;
+  		display: inline-block;
+  		font-size: 15px;
+  		color: #25262A;
+  		cursor: pointer;
+	}
+	.pharmacylabel {
+    	display: block;
+    	text-align: center;
+    	padding-bottom: 15px;
+    	margin-bottom: 0px;
+    }
+	.pagcontainer{
+  		display:flex;
+  		flex-wrap:wrap;
+ 		/*width:1200px;*/
+  		justify-content:flex-start; 
+  		transition: 400ms ease;
+  	}
+	.single-item{
+		width: 300px;
+    	height: 240px;
+    	/* display: flex; */
+    	align-items: center;
+    	/* justify-content: center; */
+    	background-color: ghostwhite;
+    	/*smargin: 20px;*/
+    	margin-bottom: 15px;
+    	border-radius: 10px;
+    	color: #888;
+	}
+	.pagination a.current {
+    	background: #f3f3f3;
+	}
+	.pagination a {
+    	display: inline-block;
+    	padding: 10px 10px;
+    	cursor: pointer;
+    }
+	.pagination, .pagination * {
+    	-webkit-user-select: none;
+    	-moz-user-select: none;
+    	-ms-user-select: none;		
+    	user-select: none;
+    	padding-left: 500px;
+	}
+	.animated {
+		animation-duration:1s;animation-fill-mode:both
+	}
+	.animated-in{z-index:0}
+	.animated-out{z-index:1}
+	.fadeOut{animation-name:fadeOut}
+	@keyframes fadeOut{0%{opacity:1}100%{opacity:0}}
+	.height{transition:height .5s ease-in-out}
+	</style>
+	
+</head>
+
+<body>
+ 
+  <div class="site-wrap">
+	<!-- Menu Bar -->
+    <div class="site-navbar py-2">
+      <div class="container">         
+        
+        <!-- Menu Area -->
+        <div class="d-flex"> 
+          <!-- System Name/Logo -->    
+	        <div class="site-logo">
+			 <a th:href="@{${T(pec.datacode.UserPageInfo).USER_Home.url}+'?top'}" class="js-logo-clone"><strong class="text-primary">Pharma</strong>tive</a>
+	        </div>
+          
+          <!-- Searchbar -->
+          <div class="active-green-4 ml-auto align-self-center">
+          			<select name="officesearch" class="form-control" onchange="officeSelect(this.value);">
+							<option value='0'>Select Branch..</option>
+							<option th:each="homeDto:${officeSearch}"
+								th:value="${homeDto.office_info_id}"
+								th:text="${homeDto.office_name}"></option>
+					</select>
+			<!-- <input class="form-control" list="pharmacyList" name="officesearch" placeholder="Select Branch.." >
+			<datalist id="pharmacyList">
+				<option th:each="homeDto:${officeSearch}" th:data-value="${homeDto.office_info_id}" th:text="${homeDto.office_name}"></option>
+			</datalist> -->
+			<!-- <input type="hidden" name="officeId" id="officesearch-hidden"> -->
+		  </div>
+        
+      </div>
+    </div>
+    <div class="bg-light py-3">
+	      <div class="container">
+	        <div class="row">	  
+	        </div>
+	      </div>
+    	</div>
+    <!-- Advertisement Panel -->
+    <div class="owl-carousel owl-single owl-theme">
+      <div class="site-blocks-cover overlay" style="background-image: url('../images/hero_1.jpg'); background-repeat: no-repeat; background-size: 100% 100%;">
+      </div>
+
+      <div class="site-blocks-cover overlay" style="background-image: url('../images/hero_bg_2.jpg'); background-repeat: no-repeat; background-size: 100% 100%;">
+      </div>
+    
+      <div class="site-blocks-cover overlay" style="background-image: url('../images/hero_bg.jpg'); background-repeat: no-repeat; background-size: 100% 100%;">
+      </div>
+      
+      <div class="site-blocks-cover overlay" style="background-image: url('../images/FAd.jpg'); background-repeat: no-repeat; background-size: 100% 100%;">
+      </div>
+
+      <div class="site-blocks-cover overlay" style="background-image: url('../images/OFAd.jpg'); background-repeat: no-repeat; background-size: 100% 100%;">
+      </div>
+      
+      <div class="site-blocks-cover overlay" style="background-image: url('../images/OGAd.jpg'); background-repeat: no-repeat; background-size: 100% 100%;">
+      </div>
+
+    </div>
+    <div class="site-section py-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="feature">
+              <span class="wrap-icon flaticon-24-hours-drugs-delivery"></span>
+              <h3><a href="#">Free Delivery</a></h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa laborum voluptates excepturi neque labore .</p>
+              </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="feature">
+              <span class="wrap-icon flaticon-medicine"></span>
+              <h3><a href="#">New Medicine Everyday</a></h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa laborum voluptates excepturi neque labore .</p>
+              </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="feature">
+              <span class="wrap-icon flaticon-test-tubes"></span>
+              <h3><a href="#">Medicines Guaranteed</a></h3>
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa laborum voluptates excepturi neque labore .</p>
+             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Branch Panel -->
+    <div class="container px-0 py-5">
+    	<!-- Branch Panel Title -->
+		<div class="title-section text-center col-12">
+			<h2>Pharmacy <strong class="text-primary">Branches</strong></h2>
+    	</div>
+    
+    	<!-- Branch Table -->
+    	<div class="container">
+  			<div class="pagcontainer justify-content-around"  data-animate="animated fadeInLeft">
+    			<div class="single-item align-items-center py-0" th:each="branchList : ${officeSearch}">
+					<!-- <a th:href="@{${T(pec.datacode.UserPageInfo).Product_Detail.url}}">  -->
+						<a th:href="@{${T(pec.datacode.UserPageInfo).USER_Home.url}+'/'+${branchList.office_info_id}}"><img th:src="@{'../images/office_image/'+${branchList.office_image_name}}" height="183" width="280" name="Office Image" style="vertical-align:middle; margin:10px"></a>
+					<br>
+					<label class="pharmacylabel text-dark" th:text="${branchList.office_name}" ></label>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	  <div class="site-section bg-image overlay" style="background-image: url('../images/hero_bg_2.jpg');">
+      <div class="container">
+        <div class="row justify-content-center text-center">
+         <div class="col-lg-7">
+           <h3 class="text-white">Sign up for discount up to 55% OFF</h3>
+           <p class="text-white">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam.</p>
+           
+         </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-section">
+      <div class="container">
+        
+        <div class="row justify-content-between">
+          <div class="col-lg-6">
+            <div class="title-section">
+              <h2>Happy <strong class="text-primary">Customers</strong></h2>
+            </div>
+            <div class="block-3 products-wrap">
+            <div class="owl-single no-direction owl-carousel">
+        
+              <div class="testimony">
+                <blockquote>
+                  <img src="../images/person_1.jpg" alt="Image" class="img-fluid">
+                  <p>&ldquo;Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam tempore obcaecati maiores voluptate aspernatur iusto eveniet, placeat ab quod tenetur ducimus. Minus ratione sit quaerat unde.&rdquo;</p>
+                </blockquote>
+
+                <p class="author">&mdash; Kelly Holmes</p>
+              </div>
+        
+              <div class="testimony">
+                <blockquote>
+                  <img src="../images/person_2.jpg" alt="Image" class="img-fluid">
+                  <p>&ldquo;Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam tempore
+                    obcaecati maiores voluptate aspernatur iusto eveniet, placeat ab quod tenetur ducimus. Minus ratione sit quaerat
+                    unde.&rdquo;</p>
+                </blockquote>
+              
+                <p class="author">&mdash; Rebecca Morando</p>
+              </div>
+        
+              <div class="testimony">
+                <blockquote>
+                  <img src="../images/person_3.jpg" alt="Image" class="img-fluid">
+                  <p>&ldquo;Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam tempore
+                    obcaecati maiores voluptate aspernatur iusto eveniet, placeat ab quod tenetur ducimus. Minus ratione sit quaerat
+                    unde.&rdquo;</p>
+                </blockquote>
+              
+                <p class="author">&mdash; Lucas Gallone</p>
+              </div>
+        
+              <div class="testimony">
+                <blockquote>
+                  <img src="../images/person_4.jpg" alt="Image" class="img-fluid">
+                  <p>&ldquo;Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam tempore
+                    obcaecati maiores voluptate aspernatur iusto eveniet, placeat ab quod tenetur ducimus. Minus ratione sit quaerat
+                    unde.&rdquo;</p>
+                </blockquote>
+              
+                <p class="author">&mdash; Andrew Neel</p>
+              </div>
+        
+            </div>
+          </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="title-section">
+              <h2 class="mb-5">Why <strong class="text-primary">Us</strong></h2>
+              <div class="step-number d-flex mb-4">
+                <span>1</span>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam tempore</p>
+              </div>
+
+              <div class="step-number d-flex mb-4">
+                <span>2</span>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam tempore</p>
+              </div>
+
+              <div class="step-number d-flex mb-4">
+                <span>3</span>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nemo omnis voluptatem consectetur quam tempore</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Footer Area -->
+	<div th:replace="common/user_footer :: userFooter"></div>
+  </div>		
+ <script src="../js/aos.js"></script>
+ <script src="../js/user_main.js"></script>
+ <script layout:fragment="scriptArea">
+ 
+  
+	(function($) {
+		var pagify = {
+			items: {},
+			pagcontainer: null,
+			totalPages: 1,
+			perPage: 3,
+			currentPage: 0,
+			createNavigation: function() {
+				this.totalPages = Math.ceil(this.items.length / this.perPage);
+
+				$('.pagination', this.pagcontainer.parent()).remove();
+				var pagination = $('<div class="pagination"></div>').append('<a class="nav prev disabled" data-next="false"><</a>');
+
+				for (var i = 0; i < this.totalPages; i++) {
+					var pageElClass = "page";
+					if (!i)
+						pageElClass = "page current";
+					var pageEl = '<a class="' + pageElClass + '" data-page="' + (
+					i + 1) + '">' + (
+					i + 1) + "</a>";
+					pagination.append(pageEl);
+				}
+				pagination.append('<a class="nav next" data-next="true">></a>');
+
+				this.pagcontainer.after(pagination);
+
+				var that = this;
+				$("body").off("click", ".nav");
+				this.navigator = $("body").on("click", ".nav", function() {
+					var el = $(this);
+					that.navigate(el.data("next"));
+				});
+
+				$("body").off("click", ".page");
+				this.pageNavigator = $("body").on("click", ".page", function() {
+					var el = $(this);
+					that.goToPage(el.data("page"));
+				});
+			},
+			navigate: function(next) {
+				// default perPage to 5
+				if (isNaN(next) || next === undefined) {
+					next = true;
+				}
+				$(".pagination .nav").removeClass("disabled");
+				if (next) {
+					this.currentPage++;
+					if (this.currentPage > (this.totalPages - 1))
+						this.currentPage = (this.totalPages - 1);
+					if (this.currentPage == (this.totalPages - 1))
+						$(".pagination .nav.next").addClass("disabled");
+					}
+				else {
+					this.currentPage--;
+					if (this.currentPage < 0)
+						this.currentPage = 0;
+					if (this.currentPage == 0)
+						$(".pagination .nav.prev").addClass("disabled");
+					}
+
+				this.showItems();
+			},
+			updateNavigation: function() {
+
+				var pages = $(".pagination .page");
+				pages.removeClass("current");
+				$('.pagination .page[data-page="' + (
+				this.currentPage + 1) + '"]').addClass("current");
+			},
+			goToPage: function(page) {
+
+				this.currentPage = page - 1;
+
+				$(".pagination .nav").removeClass("disabled");
+				if (this.currentPage == (this.totalPages - 1))
+					$(".pagination .nav.next").addClass("disabled");
+
+				if (this.currentPage == 0)
+					$(".pagination .nav.prev").addClass("disabled");
+				this.showItems();
+			},
+			showItems: function() {
+				this.items.hide();
+				var base = this.perPage * this.currentPage;
+				this.items.slice(base, base + this.perPage).show();
+
+				this.updateNavigation();
+			},
+			init: function(pagcontainer, items, perPage) {
+				this.pagcontainer = pagcontainer;
+				this.currentPage = 0;
+				this.totalPages = 1;
+				this.perPage = perPage;
+				this.items = items;
+				this.createNavigation();
+				this.showItems();
+			}
+		};
+
+		// stuff it all into a jQuery method!
+		$.fn.pagify = function(perPage, itemSelector) {
+			var el = $(this);
+			var items = $(itemSelector, el);
+
+			// default perPage to 5
+			if (isNaN(perPage) || perPage === undefined) {
+				perPage = 3;
+			}
+
+			// don't fire if fewer items than perPage
+			if (items.length <= perPage) {
+				return true;
+			}
+
+			pagify.init(el, items, perPage);
+		};
+	})(jQuery);
+
+	$(".pagcontainer").pagify(6, ".single-item");
+	
+	/* $(document).ready(function() {
+		$(document).on('change', 'input', function(){
+	    	var options = $('datalist')[0].options;
+	    	var val = $(this).val();
+	    	for (var i=0;i<options.length;i++){
+	       	if (options[i].value === val) {
+	       		window.location.assign("/user/pharmacyHome/val")
+	          break;
+	       		}
+	    	}
+		});
+	}); */
+
+	/*  var getOfficeId = document.getElementsByName('officesearch')[0].getAttribute("data-value");
+	  getOfficeId.addEventListener('input', function()
+	  {
+		  officeSelect(this.value);
+		
+	  });   */
+	  function officeSelect(input){
+		  window.location.href = "/user/pharmacyHome/selectOffice/"+input;
+	  }
+	
+	</script>
+</body>
+
+</html>
